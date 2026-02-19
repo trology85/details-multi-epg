@@ -20,11 +20,11 @@ SOURCES = {
 # 'EPGShare_ID': 'Senin_Uygulamandaki_ID'
 WANTED_CHANNELS = {
     # Alman Kanalları
-    "RTL.de": "RTL", "ProSieben.de": "Pro7", "Sat1.de": "Sat1", "Vox.de": "Vox", "ZDF.de": "ZDF",
+    "RTL.de": "RTL", "ProSieben.de": "Pro7", "SAT.1.de": "Sat1", "VOX.de": "Vox", "ZDF.de": "ZDF",
     # Fransız Kanalları
-    "TF1.fr": "TF1", "M6.fr": "M6", "France2.fr": "France.2", "CanalPlus.fr": "Canal.Plus",
+    "TF1.fr": "TF1", "M6.fr": "M6", "France2.fr": "France.2", "CanalPlus.fr": "Canal.Plus": "RTL.9.fr",
     # Yunan Kanalları
-    "ERT1.gr": "ERT1", "Mega.gr": "Mega", "Ant1.gr": "Ant1", "Skai.gr": "Skai"
+    "ERT1.gr": "ERT1", "Mega.gr": "Mega", "Ant1.gr": "ANT1.gr", "Skai.gr": "Skai"
 }
 
 def create_master():
