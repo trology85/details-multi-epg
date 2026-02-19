@@ -22,7 +22,7 @@ WANTED_CHANNELS = {
     # Alman Kanalları
     "RTL.de": "RTL", "ProSieben.de": "Pro7", "SAT.1.de": "Sat1", "VOX.de": "Vox", "ZDF.de": "ZDF",
     # Fransız Kanalları
-    "TF1.fr": "TF1", "M6.fr": "M6", "France2.fr": "France.2", "CanalPlus.fr": "Canal.Plus": "RTL.9.fr",
+    "TF1.fr": "TF1", "M6.fr": "M6", "France2.fr": "France.2", "CanalPlus.fr": "Canal.Plus", "RTL.9.fr": "RTL 9",
     # Yunan Kanalları
     "ERT1.gr": "ERT1", "Mega.gr": "Mega", "Ant1.gr": "ANT1.gr", "Skai.gr": "Skai"
 }
