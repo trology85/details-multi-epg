@@ -1,0 +1,33 @@
+name: Update Master EPG
+
+on:
+  schedule:
+    - cron: '0 3 * * *' # Her gece TR saatiyle 06:00 (UTC 03:00)
+  workflow_dispatch: # Manuel çalıştırmak için buton ekler
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install requests
+
+      - name: Run Master Scraper
+        run: python scripts/master_scraper.py
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add epg/*
+          git commit -m "Master EPG updated" || exit 0
+          git push
