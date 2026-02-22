@@ -27,7 +27,7 @@ TIVIBU_CHANNELS = {
     "TivibuSpor2.tr": "TİVİBU SPOR 2",
     "TivibuSpor3.tr": "TİVİBU SPOR 3",
     "TivibuSpor4.tr": "TİVİBU SPOR 4",
-    "TIVI6.tr": "TİVİ6"
+    "TIVI6.tr": "Tivi6"
 }
 
 def fetch_turksat_weekly(master_root):
