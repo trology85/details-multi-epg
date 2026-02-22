@@ -7,7 +7,7 @@
     <display-name lang="de">RTL</display-name>
     <url>http://www.tvtoday.de</url>
   </channel>
-  <channel id="Sat1">
+  <channel id="SAT 1">
     <display-name lang="de">SAT.1</display-name>
     <url>http://www.tvtoday.de</url>
   </channel>
@@ -2444,14 +2444,14 @@
       <value>7.9</value>
     </rating>
   </programme>
-  <programme start="20260222000000 +0000" stop="20260222005500 +0000" channel="Sat1">
+  <programme start="20260222000000 +0000" stop="20260222005500 +0000" channel="SAT 1">
     <title lang="de">Hits! Hits! Hits! – Die Erfolgsformeln der Musikmacher</title>
     <desc lang="de">Die Reportage geht dem Geheimnis erfolgreicher Musiker auf den Grund. Wie entstehen große Hymnen à la „Purple Rain“? Was es mit dem lilafarbenen Regen von Prince auf sich hat und wie aus einer Ballade ein Ohrwurm oder aus einem Dance-Song ein Chart-Hit wird, verraten Experten und Promis. Los gehts mit ikonischen Dance-Moves: von den Backstreet-Boys über über Madonna bis zur Brummkreisel-Bewegung von Dave Gahan von Depeche Mode. \n\nProminente Musiker und Produzenten kommentieren und fachsimpeln über die größten Hits und Hymnen der Musikgeschichte. Zusätzlich klären sie Fragen wie: Bei welcher Ballade bekommt man schon nach den ersten Takten eine Gänsehaut? Und warum waren Girl- und Boybands so erfolgreich?</desc>
     <category lang="de">Musikreportage</category>
     <icon src="http://img.tvspielfilm.de/23/6d/f5/56fe26b8ea60e57ff2f56d23.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260222005500 +0000" stop="20260222022500 +0000" channel="Sat1">
+  <programme start="20260222005500 +0000" stop="20260222022500 +0000" channel="SAT 1">
     <title lang="de">The Voice Kids</title>
     <desc lang="de">Das bekannte Format „The Voice Kids“ geht in die 14. Runde! Kleine und nicht mehr ganz so kleine junge Menschen singen erneut um die Gunst der Coaches und Zuschauenden. Diesmal setzt man auf Neulinge, sowie alte Hasen in der Jury: Alvaro Soler ist nach seiner Pause wieder zurück und buzzert schon zum fünften Mal um die neuen jungen Talente. Auch Michael Patrick Kelly saß schon mehrfach auf den roten Stühlen, allerdings bisher nur bei den Erwachsenen. Leony und HE/RO alias Heiko und Roman Lochmann sind 2026 als neue Coaches mit dabei.\n\nDas Konzept der Show bleibt größtenteils gleich und so stehen zunächst die Blind Auditions an, bei der die Coaches für ihr Talent buzzern müssen. In den darauffolgenden Folgen unterstützen die Coaches ihre Schützlinge dabei, das Beste aus sich herauszuholen und bringen sie durch die Battles und Sing-Offs bis ins Finale. Moderiert wird die Staffel nur von Melissa Khalaj, denn Moderator Thore Schölermann ist dieses Mal nicht mehr dabei. \n\nNeu bei dieser Staffel ist der sogenannte Joker, den es auch bei "The Voice of Germany" gibt. Jeder Coach hat in den Blind Auditions die Möglichkeit seine Joker-Münzer einmalig einzusetzen – was darauf folgt, wissen nicht mal die Coaches selbst, doch eins ist klar: es wird eine Überraschung, die den jeweiligen Coach im besten Licht präsentiert und helfen kann, ein Talent von sich zu überzeugen.</desc>
     <date>2026</date>
@@ -2459,7 +2459,7 @@
     <icon src="http://img.tvspielfilm.de/b0/9e/6f/622b7f7581896522be6f9eb0.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260222022500 +0000" stop="20260222031000 +0000" channel="Sat1">
+  <programme start="20260222022500 +0000" stop="20260222031000 +0000" channel="SAT 1">
     <title lang="de">Auf Streife – Die Spezialisten</title>
     <sub-title lang="de">Sprung ins kalte Wasser</sub-title>
     <desc lang="de">Ableger der Polizisten-Pseudo-Doku „Auf Streife“. Neben den bekannten Protagonisten aus dem Nachmittagsprogramm werden auch Autobahn- und Wasserschutzpolizisten sowie Feuerwehrmänner, Notärzte und Zollbeamte in ihrem Joballtag begleitet.</desc>
@@ -2468,7 +2468,7 @@
     <icon src="http://img.tvspielfilm.de/c3/c7/20/58a47462f033af03f720c7c3.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260222031000 +0000" stop="20260222035500 +0000" channel="Sat1">
+  <programme start="20260222031000 +0000" stop="20260222035500 +0000" channel="SAT 1">
     <title lang="de">Auf Streife – Die Spezialisten</title>
     <sub-title lang="de">Bügeln und Rügen</sub-title>
     <desc lang="de">Ableger der Polizisten-Pseudo-Doku „Auf Streife“. Neben den bekannten Protagonisten aus dem Nachmittagsprogramm werden auch Autobahn- und Wasserschutzpolizisten sowie Feuerwehrmänner, Notärzte und Zollbeamte in ihrem Joballtag begleitet.</desc>
@@ -2477,7 +2477,7 @@
     <icon src="http://img.tvspielfilm.de/c3/c7/20/58a47462f033af03f720c7c3.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260222035500 +0000" stop="20260222042000 +0000" channel="Sat1">
+  <programme start="20260222035500 +0000" stop="20260222042000 +0000" channel="SAT 1">
     <title lang="de">Auf Streife – Die Spezialisten</title>
     <sub-title lang="de">Gefährlicher Wettlauf</sub-title>
     <desc lang="de">Ableger der Polizisten-Pseudo-Doku „Auf Streife“. Neben den bekannten Protagonisten aus dem Nachmittagsprogramm werden auch Autobahn- und Wasserschutzpolizisten sowie Feuerwehrmänner, Notärzte und Zollbeamte in ihrem Joballtag begleitet.</desc>
@@ -2486,7 +2486,7 @@
     <icon src="http://img.tvspielfilm.de/c3/c7/20/58a47462f033af03f720c7c3.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260222042000 +0000" stop="20260222044000 +0000" channel="Sat1">
+  <programme start="20260222042000 +0000" stop="20260222044000 +0000" channel="SAT 1">
     <title lang="de">Auf Streife – Die Spezialisten</title>
     <sub-title lang="de">Der Sex ging ins Auge</sub-title>
     <desc lang="de">Ableger der Polizisten-Pseudo-Doku „Auf Streife“. Neben den bekannten Protagonisten aus dem Nachmittagsprogramm werden auch Autobahn- und Wasserschutzpolizisten sowie Feuerwehrmänner, Notärzte und Zollbeamte in ihrem Joballtag begleitet.</desc>
@@ -2495,7 +2495,7 @@
     <icon src="http://img.tvspielfilm.de/c3/c7/20/58a47462f033af03f720c7c3.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260222044000 +0000" stop="20260222054000 +0000" channel="Sat1">
+  <programme start="20260222044000 +0000" stop="20260222054000 +0000" channel="SAT 1">
     <title lang="de">Auf Streife – Berlin</title>
     <sub-title lang="de">Polizei jagt zwei geflohene Häftlinge</sub-title>
     <desc lang="de">Diebstahl und Einbruch, häusliche Gewalt, Ruhestörung, Schulschwänzer, Nachbarschaftsstreitigkeiten, Gewaltdelikte, jugendlicher Leichtsinn oder verunglückte Liebesbeweise. Die Sendung zeigt auf der Basis realer Polizeifälle, den harten und gefährlichen Einsatz echter Großstadt-Polizisten.</desc>
@@ -2504,7 +2504,7 @@
     <icon src="http://img.tvspielfilm.de/07/97/24/572078e6f033af0b36249707.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260222054000 +0000" stop="20260222064000 +0000" channel="Sat1">
+  <programme start="20260222054000 +0000" stop="20260222064000 +0000" channel="SAT 1">
     <title lang="de">Auf Streife – Berlin</title>
     <sub-title lang="de">Schuss aus dem Nichts</sub-title>
     <desc lang="de">Diebstahl und Einbruch, häusliche Gewalt, Ruhestörung, Schulschwänzer, Nachbarschaftsstreitigkeiten, Gewaltdelikte, jugendlicher Leichtsinn oder verunglückte Liebesbeweise. Die Sendung zeigt auf der Basis realer Polizeifälle, den harten und gefährlichen Einsatz echter Großstadt-Polizisten.</desc>
@@ -2513,7 +2513,7 @@
     <icon src="http://img.tvspielfilm.de/07/97/24/572078e6f033af0b36249707.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260222064000 +0000" stop="20260222074000 +0000" channel="Sat1">
+  <programme start="20260222064000 +0000" stop="20260222074000 +0000" channel="SAT 1">
     <title lang="de">Auf Streife – Berlin</title>
     <sub-title lang="de">Friss und stirb!</sub-title>
     <desc lang="de">Diebstahl und Einbruch, häusliche Gewalt, Ruhestörung, Schulschwänzer, Nachbarschaftsstreitigkeiten, Gewaltdelikte, jugendlicher Leichtsinn oder verunglückte Liebesbeweise. Die Sendung zeigt auf der Basis realer Polizeifälle, den harten und gefährlichen Einsatz echter Großstadt-Polizisten.</desc>
@@ -2522,14 +2522,14 @@
     <icon src="http://img.tvspielfilm.de/07/97/24/572078e6f033af0b36249707.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260222074000 +0000" stop="20260222080000 +0000" channel="Sat1">
+  <programme start="20260222074000 +0000" stop="20260222080000 +0000" channel="SAT 1">
     <title lang="de">Basis:Kirche – Die Reportage</title>
     <date>2024</date>
     <category lang="de">Reportage</category>
     <icon src="http://img.tvspielfilm.de/9a/1c/de/5de12c4d8189654243de1c9a.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260222080000 +0000" stop="20260222105000 +0000" channel="Sat1">
+  <programme start="20260222080000 +0000" stop="20260222105000 +0000" channel="SAT 1">
     <title lang="de">SAT.1-Frühstücksfernsehen am Sonntag</title>
     <desc lang="de">Fix noch frische Brötchen holen und dann hier unterhalten und informieren lassen! Das beliebte Morgenmagazin läuft jeden Sonntag von 9 Uhr bis 11 Uhr. Im Wechsel moderieren Daniel Boschmann, Karen Heinrichs, Annika Lau, Marlene Lufen, Matthias Killing und Chris Wackert.</desc>
     <date>2021</date>
@@ -2537,21 +2537,21 @@
     <icon src="http://img.tvspielfilm.de/03/d0/2f/564562d2ea60e556a32fd003.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260222105000 +0000" stop="20260222131500 +0000" channel="Sat1">
+  <programme start="20260222105000 +0000" stop="20260222131500 +0000" channel="SAT 1">
     <title lang="de">H&amp;M, Primark, C&amp;A &amp; Co. – Der SAT.1 Modeketten-Check!</title>
     <date>2024</date>
     <category lang="de">Dokumentarfilm</category>
     <icon src="http://img.tvspielfilm.de/a5/40/4a/6177d8cb8189652ccb4a40a5.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260222131500 +0000" stop="20260222151500 +0000" channel="Sat1">
+  <programme start="20260222131500 +0000" stop="20260222151500 +0000" channel="SAT 1">
     <title lang="de">Action, Tedi, Woolworth – Der SAT.1 Schnäppchenmarkt-Check!</title>
     <date>2025</date>
     <category lang="de">Dokumentation</category>
     <icon src="http://img.tvspielfilm.de/5f/69/10/68b6a65e7d2554567910695f.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260222151500 +0000" stop="20260222162000 +0000" channel="Sat1">
+  <programme start="20260222151500 +0000" stop="20260222162000 +0000" channel="SAT 1">
     <title lang="de">Kuchen oder Chaos – Das Backbattle der Reality-Stars</title>
     <desc lang="de">Jetzt heißt es wieder: Reality trifft auf die Künste der Konditorei – zwei Reality-Stars müssen ein und denselben Kuchen oder dieselbe Torte backen und das unter einem besonderen Motto oder mit einem überraschenden Twist. Dabei wird zwar gleichzeitig, aber an unterschiedlichen Orten gebacken. \n\nZudem wären es nicht die Realitystars, wenn sie nicht auch was zu den Backkünsten ihrer Konkurrenten zu sagen hätten. Gewohnt bissig, charmant und mit einer ordentlichen Portion Ironie kommentieren die Stars den Fortschritt ihres Gegenübers. Wer sorgt für Chaos? Wer behält die Neven? \n\nDas Besondere: Die Zuschauenden entscheiden, wer das Backbattle gewinnt.</desc>
     <date>2026</date>
@@ -2559,7 +2559,7 @@
     <icon src="http://img.tvspielfilm.de/4f/b5/b7/5c497a548189656debb7b54f.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260222162000 +0000" stop="20260222185500 +0000" channel="Sat1">
+  <programme start="20260222162000 +0000" stop="20260222185500 +0000" channel="SAT 1">
     <title lang="de">Das große Promibacken</title>
     <desc lang="de">Hier kneten, rühren und modellieren die Stars! In der Promiausgabe von "Das große Backen" treten acht Prominente gegeneinander an, um Deutschlands bester Promi-Bäcker zu werden. Ihr handwerkliches Können müssen sie in insgesamt zwölf Prüfungen beweisen. Der beste Bäcker oder die beste Bäckerin gewinnt 10.000 Euro für einen guten Zweck.</desc>
     <date>2026</date>
@@ -2567,7 +2567,7 @@
     <icon src="http://img.tvspielfilm.de/19/42/f9/6023c40c8189651233f94219.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260222185500 +0000" stop="20260222191500 +0000" channel="Sat1">
+  <programme start="20260222185500 +0000" stop="20260222191500 +0000" channel="SAT 1">
     <title lang="de">SAT.1 :newstime</title>
     <desc lang="de">In dieser Nachrichtensendung informiert das Moderations-Duo Claudia von Brauchitsch und Marc Bator live im Wechsel über die wichtigsten, tagesaktuellen Geschehnisse in Politik, Wirtschaft, Gesellschaft und dem Sport.</desc>
     <date>2026</date>
@@ -2575,7 +2575,7 @@
     <icon src="http://img.tvspielfilm.de/f0/b5/23/649d4dcefc89663a9923b5f0.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260222191500 +0000" stop="20260222221000 +0000" channel="Sat1">
+  <programme start="20260222191500 +0000" stop="20260222221000 +0000" channel="SAT 1">
     <title lang="de">Jurassic World: Ein neues Zeitalter</title>
     <desc lang="de">Die Tiere sind in den Alltag integriert, der Konzern BioSyn forscht an ihrer DNA – zum Nutzen der Menschheit. Schöne neue Welt? Nicht ganz. Während BioSyn-Boss Dodgson Mieses im Sinn hat, versuchen Owen und Claire in einer Waldhütte in den USA, die aus der DNA ihrer Mutter geklonte Pflegetochter Maisie vor der Welt und BioSyn zu beschützen… \n\nBeringsee, Sierra Nevada, Malta, Italien – Colin Trevorrow geizt nicht mit Schauplätzen, und bei Chris Pratts Motorrad-Dino-Verfolgungsjagd durch Valletta glaubt man sich glatt bei James Bond. Auch der neue ethische Ansatz steht dem Film gut.</desc>
     <credits>
@@ -2602,7 +2602,7 @@
       <value>5.5</value>
     </rating>
   </programme>
-  <programme start="20260222221000 +0000" stop="20260223002000 +0000" channel="Sat1">
+  <programme start="20260222221000 +0000" stop="20260223002000 +0000" channel="SAT 1">
     <title lang="de">Die Mumie</title>
     <desc lang="de">Anders als die „Mumien“-Filme mit Brendan Fraser und die „Scorpion King“-Rip-offs ist die neue Version des Gruselklassikers im London der Gegenwart angesiedelt und recht ernst: Die Eröffnungsszene spielt im alten Ägypten, wo die machtgierige Prinzessin Ahmanet (Sofia Boutella) ihren Vater und den erstgeborenen Sohn meuchelt. \n\nZur Strafe wird sie einbandagiert und tief in der Erde verbuddelt. Im Nordirak von heute wird sie zum Leben erweckt und will Rache an der Menschheit nehmen. Abenteurer Nick Morton (Cruise) kommt ihr in die Quere – und wird Opfer eines Fluchs… \n\nDer Auftakt für eine neue, inzwischen wohl verworfene Monsterfilmreihe beginnt rasant, verliert aber das Wesentliche aus dem Blick: die Mumie. Sie bleibt Beiwerk zwischen Kreuzritterkitsch, Armeen Untoter und Russell Crowes „Jekyll &amp; Hyde“-Part.</desc>
     <credits>
@@ -2637,7 +2637,7 @@
       <value>5.4</value>
     </rating>
   </programme>
-  <programme start="20260223002000 +0000" stop="20260223020500 +0000" channel="Sat1">
+  <programme start="20260223002000 +0000" stop="20260223020500 +0000" channel="SAT 1">
     <title lang="de">Operation: Kingdom</title>
     <desc lang="de">Bei einem Bombenattentat auf eine US-Wohnanlage in Riad sterben über hundert Menschen. Um die Täter aufzuspüren, fliegt ein FBI-Team in die saudische Hauptstadt. Kommandeur Fleury (Jamie Foxx), Sprengstoffexperte Sykes (Chris Cooper), Forensikerin Mayes (Jennifer Garner) und Analytiker Leavitt (Jason Bateman) sind jedoch wenig willkommen und haben hier kaum Befugnisse. Nur der saudische Polizeioffizier Al-Ghazi (Ashraf Barhoum) ist bereit, sie zu unterstützen. Als die Jäger den Terroristen zu nahe kommen, werden sie selbst zur Zielscheibe…\n\nDer nicht vor Ort, sondern in Israel, Abu Dhabi und Arizona gedrehte Thriller richtet sich eher an Fans schnell geschnittener Action als ans politinteressierte „Syriana“-Publikum. Dennoch erlaubt sich der Film klare Kritik an der „ölbetriebenen“ Freundschaft zwischen Washington und den Saudis.</desc>
     <credits>
@@ -2667,7 +2667,7 @@
       <value>7.0</value>
     </rating>
   </programme>
-  <programme start="20260223020500 +0000" stop="20260223035000 +0000" channel="Sat1">
+  <programme start="20260223020500 +0000" stop="20260223035000 +0000" channel="SAT 1">
     <title lang="de">The Illusionist</title>
     <desc lang="de">Wien um 1900: Magier Eisenheim (Edward Norton) fesselt die Zuschauer mit unglaublichen Tricks. In einer Vorstellung trifft er Jugendliebe Sophie (Jessica Biel) wieder. Beide entflammen erneut füreinander. Doch die Herzogin ist bereits Österreichs Kronprinz Leopold (Rufus Sewell) versprochen. Der hält den Illusionisten für einen Scharlatan und versucht, ihn mithilfe des Chefinspektors Uhl (Paul Giamatti) zu entzaubern. Als er von Eisenheims Affäre mit Sophie erfährt, greift er zu drastischen Mitteln, um den Rivalen auszuschalten…\n\nZeitgleich entstanden mit dem vermeintlichen Konkurrenzfilm „Prestige“, einem Zauberer-Thrillerdrama mit Hugh Jackman, kam „The Illusionist“ hierzulande nie in die Kinos. Schade, denn die sepiagetönten, Oscar-nominierten Bilder und die trickreiche Story verbreiten nostalgisch-magisches Flair.</desc>
     <credits>
@@ -2699,7 +2699,7 @@
       <value>7.5</value>
     </rating>
   </programme>
-  <programme start="20260223035000 +0000" stop="20260223043000 +0000" channel="Sat1">
+  <programme start="20260223035000 +0000" stop="20260223043000 +0000" channel="SAT 1">
     <title lang="de">Auf Streife</title>
     <sub-title lang="de">Tort mit Torte</sub-title>
     <desc lang="de">Diebstahl und Einbruch, häusliche Gewalt, Ruhestörung, Schulschwänzer oder Nachbarschaftsstreitigkeiten – auf der Basis echter Fälle wird der Alltag von Streifenpolizisten nachgestellt.</desc>
@@ -2708,7 +2708,7 @@
     <icon src="http://img.tvspielfilm.de/c3/c7/20/58a47462f033af03f720c7c3.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260223043000 +0000" stop="20260223090000 +0000" channel="Sat1">
+  <programme start="20260223043000 +0000" stop="20260223090000 +0000" channel="SAT 1">
     <title lang="de">SAT.1-Frühstücksfernsehen</title>
     <desc lang="de">Seit 1987 (damals "Guten Morgen mit Sat.1.</desc>
     <date>2026</date>
@@ -2716,7 +2716,7 @@
     <icon src="http://img.tvspielfilm.de/f8/0c/21/56395855ea60e556a3210cf8.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260223090000 +0000" stop="20260223100000 +0000" channel="Sat1">
+  <programme start="20260223090000 +0000" stop="20260223100000 +0000" channel="SAT 1">
     <title lang="de">Richter Alexander Hold</title>
     <sub-title lang="de">Die Thailand-Connection</sub-title>
     <desc lang="de">Vom Drogendeal bis zur Sexualstraftat – Alexander Hold löst Strafrechtsdelikte. An der Seite des Ex-Staatsanwalt und Richter am Amtsgericht in Kempten agieren neben Laiendarstellern echte Juristenkollegen.</desc>
@@ -2725,7 +2725,7 @@
     <icon src="http://img.tvspielfilm.de/41/f4/aa/545089d2e4b0d02df3aaf441.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260223100000 +0000" stop="20260223110000 +0000" channel="Sat1">
+  <programme start="20260223100000 +0000" stop="20260223110000 +0000" channel="SAT 1">
     <title lang="de">Richter Alexander Hold</title>
     <sub-title lang="de">Der Ballettjunge</sub-title>
     <desc lang="de">Vom Drogendeal bis zur Sexualstraftat – Alexander Hold löst Strafrechtsdelikte. An der Seite des Ex-Staatsanwalt und Richter am Amtsgericht in Kempten agieren neben Laiendarstellern echte Juristenkollegen.</desc>
@@ -2734,7 +2734,7 @@
     <icon src="http://img.tvspielfilm.de/41/f4/aa/545089d2e4b0d02df3aaf441.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260223110000 +0000" stop="20260223120000 +0000" channel="Sat1">
+  <programme start="20260223110000 +0000" stop="20260223120000 +0000" channel="SAT 1">
     <title lang="de">Richter Alexander Hold</title>
     <sub-title lang="de">Verraten und verkauft</sub-title>
     <desc lang="de">Vom Drogendeal bis zur Sexualstraftat – Alexander Hold löst Strafrechtsdelikte. An der Seite des Ex-Staatsanwalt und Richter am Amtsgericht in Kempten agieren neben Laiendarstellern echte Juristenkollegen.</desc>
@@ -2743,7 +2743,7 @@
     <icon src="http://img.tvspielfilm.de/41/f4/aa/545089d2e4b0d02df3aaf441.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260223120000 +0000" stop="20260223130000 +0000" channel="Sat1">
+  <programme start="20260223120000 +0000" stop="20260223130000 +0000" channel="SAT 1">
     <title lang="de">Richter Alexander Hold</title>
     <sub-title lang="de">Wer nicht hören will muss fühlen</sub-title>
     <desc lang="de">Vom Drogendeal bis zur Sexualstraftat – Alexander Hold löst Strafrechtsdelikte. An der Seite des Ex-Staatsanwalt und Richter am Amtsgericht in Kempten agieren neben Laiendarstellern echte Juristenkollegen.</desc>
@@ -2752,7 +2752,7 @@
     <icon src="http://img.tvspielfilm.de/41/f4/aa/545089d2e4b0d02df3aaf441.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260223130000 +0000" stop="20260223140000 +0000" channel="Sat1">
+  <programme start="20260223130000 +0000" stop="20260223140000 +0000" channel="SAT 1">
     <title lang="de">Auf Streife</title>
     <sub-title lang="de">Frauen verboten</sub-title>
     <desc lang="de">Diebstahl und Einbruch, häusliche Gewalt, Ruhestörung, Schulschwänzer oder Nachbarschaftsstreitigkeiten – auf der Basis echter Fälle wird der Alltag von Streifenpolizisten nachgestellt.</desc>
@@ -2761,7 +2761,7 @@
     <icon src="http://img.tvspielfilm.de/c3/c7/20/58a47462f033af03f720c7c3.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260223140000 +0000" stop="20260223150000 +0000" channel="Sat1">
+  <programme start="20260223140000 +0000" stop="20260223150000 +0000" channel="SAT 1">
     <title lang="de">Auf Streife</title>
     <sub-title lang="de">Goldfinger</sub-title>
     <desc lang="de">Diebstahl und Einbruch, häusliche Gewalt, Ruhestörung, Schulschwänzer oder Nachbarschaftsstreitigkeiten – auf der Basis echter Fälle wird der Alltag von Streifenpolizisten nachgestellt.</desc>
@@ -2770,7 +2770,7 @@
     <icon src="http://img.tvspielfilm.de/c3/c7/20/58a47462f033af03f720c7c3.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260223150000 +0000" stop="20260223160000 +0000" channel="Sat1">
+  <programme start="20260223150000 +0000" stop="20260223160000 +0000" channel="SAT 1">
     <title lang="de">Lebensretter hautnah – Wenn jede Sekunde zählt</title>
     <desc lang="de">Was macht die Arbeit von Rettungssanitätern aus? 15 Kameras begleiten Sanitäter und Ärzte bei ihren Einsätzen und wollen so für den Zuschauer erlebbar machen, wie es sich anfühlt, Leben zu retten.</desc>
     <date>2026</date>
@@ -2778,7 +2778,7 @@
     <icon src="http://img.tvspielfilm.de/09/1f/fe/6515567a7ad4a05f2dfe1f09.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260223160000 +0000" stop="20260223163000 +0000" channel="Sat1">
+  <programme start="20260223160000 +0000" stop="20260223163000 +0000" channel="SAT 1">
     <title lang="de">NOTRUF</title>
     <sub-title lang="de">Betrunken oder in Lebensgefahr</sub-title>
     <desc lang="de">Die Kultsendung ist zurück – dieses Mal auf SAT.1! Bärbel Schäfer übernimmt: "Rettungskräfte und Notfallärzte leisten eine außergewöhnliche Arbeit. Es sind Menschen, die versuchen, Leben zu retten. Leider werden sie heutzutage auch angegriffen und daran gehindert, ihren Job zu machen. Wenn man das macht, kann es Menschenleben kosten. Das ist mir ein Rätsel und trifft bei mir auf völliges Unverständnis. Mit 'NOTRUF' wollen wir diesen 'echten Helden' Respekt verschaffen und die Anerkennung geben, die sie mehr als verdienen."\n\nUm die 84.000 Notrufe gehen täglich in den deutschen Rettungsleitstellen ein – eine utopische Zahl, welche vollen Einsatz von den Rettungskräften fordert. Mit dem Notruf beginnt für sie der Kampf gegen die Zeit, um zu helfen und Menschenleben zu retten. Die Notsituationen werden laut SAT.1 in Echtzeit nachgestellt. Der Sender zeigt ihre tägliche Arbeit.</desc>
@@ -2787,7 +2787,7 @@
     <icon src="http://img.tvspielfilm.de/09/1f/fe/6515567a7ad4a05f2dfe1f09.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260223163000 +0000" stop="20260223170000 +0000" channel="Sat1">
+  <programme start="20260223163000 +0000" stop="20260223170000 +0000" channel="SAT 1">
     <title lang="de">NOTRUF; oder SAT.1 Regional-Magazine</title>
     <sub-title lang="de">Abgestürzt und aufgespießt</sub-title>
     <desc lang="de">Die Kultsendung ist zurück – dieses Mal auf SAT.1! Bärbel Schäfer übernimmt: "Rettungskräfte und Notfallärzte leisten eine außergewöhnliche Arbeit. Es sind Menschen, die versuchen, Leben zu retten. Leider werden sie heutzutage auch angegriffen und daran gehindert, ihren Job zu machen. Wenn man das macht, kann es Menschenleben kosten. Das ist mir ein Rätsel und trifft bei mir auf völliges Unverständnis. Mit 'NOTRUF' wollen wir diesen 'echten Helden' Respekt verschaffen und die Anerkennung geben, die sie mehr als verdienen."\n\nUm die 84.000 Notrufe gehen täglich in den deutschen Rettungsleitstellen ein – eine utopische Zahl, welche vollen Einsatz von den Rettungskräften fordert. Mit dem Notruf beginnt für sie der Kampf gegen die Zeit, um zu helfen und Menschenleben zu retten. Die Notsituationen werden laut SAT.1 in Echtzeit nachgestellt. Der Sender zeigt ihre tägliche Arbeit.</desc>
@@ -2796,7 +2796,7 @@
     <icon src="http://img.tvspielfilm.de/09/1f/fe/6515567a7ad4a05f2dfe1f09.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260223170000 +0000" stop="20260223173000 +0000" channel="Sat1">
+  <programme start="20260223170000 +0000" stop="20260223173000 +0000" channel="SAT 1">
     <title lang="de">Lenßen hilft</title>
     <sub-title lang="de">Omma muss blechen!</sub-title>
     <desc lang="de">Endlich ist Ingo Lenßen wieder im SAT.1-Tagesprogramm zu sehen, diesmal mit einem neuen Konzept und einem verstärkten Team. In dem Format "Lenßen hilft.</desc>
@@ -2805,7 +2805,7 @@
     <icon src="http://img.tvspielfilm.de/19/90/14/5f7aed758189650837149019.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260223173000 +0000" stop="20260223180000 +0000" channel="Sat1">
+  <programme start="20260223173000 +0000" stop="20260223180000 +0000" channel="SAT 1">
     <title lang="de">Lenßen hilft</title>
     <sub-title lang="de">Oma am Steuer, Abenteuer</sub-title>
     <desc lang="de">Endlich ist Ingo Lenßen wieder im SAT.1-Tagesprogramm zu sehen, diesmal mit einem neuen Konzept und einem verstärkten Team. In dem Format "Lenßen hilft.</desc>
@@ -2814,7 +2814,7 @@
     <icon src="http://img.tvspielfilm.de/19/90/14/5f7aed758189650837149019.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260223180000 +0000" stop="20260223184500 +0000" channel="Sat1">
+  <programme start="20260223180000 +0000" stop="20260223184500 +0000" channel="SAT 1">
     <title lang="de">Die Landarztpraxis</title>
     <sub-title lang="de">Der schmale Grat</sub-title>
     <desc lang="de">Das Format startet mit 13,2 Prozent im Mittel eher klinisch bedenklich ins Jahr, in dem es vorabendbestimmend bleiben soll. Immerhin besser, als die „Spreewaldklinik“. Pusht der heutige Herzschmerz von Vicky (Juliane Fisch) und Simon (Ben Braun) die Quote?\n\nDie beiden wollen zusammen die Wiesenkirchner Senioren fit machen, doch währenddessen kommen die beiden sich so nah, dass die Funken sprühen. Vicky versucht sich der Situation zu entziehen und verknackst sich dabei jedoch unglücklicherweise den Fuß. Doch die Blessur an ihrem Fuß ist nur das kleinere Übel, im Gegensatz zu dem Schaden an ihrem Herzen….</desc>
@@ -2838,7 +2838,7 @@
     <country lang="de">D</country>
     <episode-num system="onscreen">S4 E37/240</episode-num>
   </programme>
-  <programme start="20260223184500 +0000" stop="20260223191500 +0000" channel="Sat1">
+  <programme start="20260223184500 +0000" stop="20260223191500 +0000" channel="SAT 1">
     <title lang="de">SAT.1 :newstime</title>
     <desc lang="de">In dieser Nachrichtensendung informiert das Moderations-Duo Claudia von Brauchitsch und Marc Bator live im Wechsel über die wichtigsten, tagesaktuellen Geschehnisse in Politik, Wirtschaft, Gesellschaft und dem Sport.</desc>
     <date>2026</date>
@@ -2846,7 +2846,7 @@
     <icon src="http://img.tvspielfilm.de/f0/b5/23/649d4dcefc89663a9923b5f0.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260223191500 +0000" stop="20260223213500 +0000" channel="Sat1">
+  <programme start="20260223191500 +0000" stop="20260223213500 +0000" channel="SAT 1">
     <title lang="de">Promis unter Palmen – Für Geld mache ich alles!</title>
     <desc lang="de">Wenn eine Gruppe von „sozial auffälligen Promis“ in einer Villa aufeinandertrifft und es um viel Geld geht, dann birgt jeder Tag Explosionsgefahr: So sind direkt beim Kapitänsspiel mit dem Titel „Gehüpft wie geschlungen“ starke Nerven gefragt. In einem Plexiglaswürfel müssen sich die Prominenten durch zahlreiche Heuschrecken kämpfen, zwischen denen auch appetitliche Fruchtstücke versteckt sind. Die beiden Kandidaten, die am meisten verdrücken, ergattern die Kapitänsbinde und dürfen ihre Teams für das kommende Gruppenduell auswählen.\n\nAnschließend geht es für die Mannschaften an den Strand wo sie auf jeweils einem gemeinsamen Skierpaar zu einem Biathlon-Parcours gegeneinander antreten. Am Schießstand entscheidet schließlich die Treffsicherheit: Wer die meisten Treffer landet, sichert seinem Team den Verbleib in der Villa.</desc>
     <date>2026</date>
@@ -2854,7 +2854,7 @@
     <icon src="http://img.tvspielfilm.de/c3/e6/4c/698c86c3eb67150fe94ce6c3.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260223213500 +0000" stop="20260223234000 +0000" channel="Sat1">
+  <programme start="20260223213500 +0000" stop="20260223234000 +0000" channel="SAT 1">
     <title lang="de">Aldi, Lidl, Penny – Der SAT.1 Discounter-Check!</title>
     <desc lang="de">Deutschland ist Discounterland. Für viele gehören Penny, Aldi und Netto zum Alltag und sind nicht mehr wegzudenken. Discounter locken mit günstigen Preisen und bieten auch Schnäppchen aus dem Non-Food-Bereich. Das Einkaufen bei Lidl, Penny, Aldi und Co. ist nämlich viel mehr als nur billig. Aber ist dort alles wirklich so billig, wie es auf den ersten Blick erscheint bzw. wie dafür geworben wird? Wie ist das Preis-Leistungs-Verhältnis? Sind die Eigenmarken empfehlenswert? Und stimmt die Qualität, sowie das Einkaufserlebnis? \n\nVerbraucher und Verbraucherinnen und Fachleute nehmen diverse Discounter in Hinsicht auf Service, Angebot, Atmosphäre, Image und Nachhaltigkeit unter die Lupe. Grundlage der Analyse ist stets eine aktuelle, repräsentative Umfrage, die SAT.1 zu dem Thema in Auftrag gibt. Auch die Unternehmen selbst kommen zu Wort und stellen sich der Kritik.</desc>
     <date>2025</date>
@@ -2862,7 +2862,7 @@
     <icon src="http://img.tvspielfilm.de/0f/78/f6/64e714e4c325974572f6780f.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260223234000 +0000" stop="20260224013500 +0000" channel="Sat1">
+  <programme start="20260223234000 +0000" stop="20260224013500 +0000" channel="SAT 1">
     <title lang="de">Promis unter Palmen – Für Geld mache ich alles!</title>
     <desc lang="de">„Big Brother“ auf der thailändischen Insel Koh Samui. 24 Stunden lang von Kameras beobachtet, kämpft eine Gruppe von B- und C-Promis gegeneinander um 50.000 Euro und die goldene Kokosnuss. Nach dem plötzlichen Tod des Teilnehmers Willi Herren endete die zweite Staffel noch während der Ausstrahlung abrupt, nun folgt Staffel vier. \n\nMit dabei sind die üblichen Reality-Sternchen wie Edith und Eric Stehfest, Kevin Wolter, Claude-Oliver Rudolph, Gina-Lisa Lohfink, Silvia Wollny, Martin Angelo und Anouschka Renzi.</desc>
     <date>2026</date>
@@ -2870,21 +2870,21 @@
     <icon src="http://img.tvspielfilm.de/c3/e6/4c/698c86c3eb67150fe94ce6c3.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260224013500 +0000" stop="20260224014000 +0000" channel="Sat1">
+  <programme start="20260224013500 +0000" stop="20260224014000 +0000" channel="SAT 1">
     <title lang="de">Auf den Punkt</title>
     <desc lang="de">Sat. 1 bringt in diesem Nachrichtenformat die Geschehnisse der Welt in knapp zwei Minuten „Auf den Punkt“.</desc>
     <date>2026</date>
     <category lang="de">Talk</category>
     <icon src="http://img.tvspielfilm.de/56/18/e6/5efc4af38189654bcee61856.jpeg" />
   </programme>
-  <programme start="20260224014000 +0000" stop="20260224032000 +0000" channel="Sat1">
+  <programme start="20260224014000 +0000" stop="20260224032000 +0000" channel="SAT 1">
     <title lang="de">Aldi, Lidl, Penny – Der SAT.1 Discounter-Check!</title>
     <date>2025</date>
     <category lang="de">Reportage</category>
     <icon src="http://img.tvspielfilm.de/0f/78/f6/64e714e4c325974572f6780f.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260224032000 +0000" stop="20260224040500 +0000" channel="Sat1">
+  <programme start="20260224032000 +0000" stop="20260224040500 +0000" channel="SAT 1">
     <title lang="de">Auf Streife</title>
     <sub-title lang="de">Rentnerin klaut für ihre Existenz</sub-title>
     <desc lang="de">Diebstahl und Einbruch, häusliche Gewalt, Ruhestörung, Schulschwänzer oder Nachbarschaftsstreitigkeiten – auf der Basis echter Fälle wird der Alltag von Streifenpolizisten nachgestellt.</desc>
@@ -2893,7 +2893,7 @@
     <icon src="http://img.tvspielfilm.de/c3/c7/20/58a47462f033af03f720c7c3.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260224040500 +0000" stop="20260224043000 +0000" channel="Sat1">
+  <programme start="20260224040500 +0000" stop="20260224043000 +0000" channel="SAT 1">
     <title lang="de">Auf Streife</title>
     <sub-title lang="de">No Baby on Board</sub-title>
     <desc lang="de">Diebstahl und Einbruch, häusliche Gewalt, Ruhestörung, Schulschwänzer oder Nachbarschaftsstreitigkeiten – auf der Basis echter Fälle wird der Alltag von Streifenpolizisten nachgestellt.</desc>
@@ -2902,7 +2902,7 @@
     <icon src="http://img.tvspielfilm.de/c3/c7/20/58a47462f033af03f720c7c3.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260224043000 +0000" stop="20260224090000 +0000" channel="Sat1">
+  <programme start="20260224043000 +0000" stop="20260224090000 +0000" channel="SAT 1">
     <title lang="de">SAT.1-Frühstücksfernsehen</title>
     <desc lang="de">Seit 1987 (damals "Guten Morgen mit Sat.1.</desc>
     <date>2026</date>
@@ -2910,7 +2910,7 @@
     <icon src="http://img.tvspielfilm.de/f8/0c/21/56395855ea60e556a3210cf8.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260224090000 +0000" stop="20260224100000 +0000" channel="Sat1">
+  <programme start="20260224090000 +0000" stop="20260224100000 +0000" channel="SAT 1">
     <title lang="de">Richter Alexander Hold</title>
     <sub-title lang="de">Das Nazi-Mädchen</sub-title>
     <desc lang="de">Vom Drogendeal bis zur Sexualstraftat – Alexander Hold löst Strafrechtsdelikte. An der Seite des Ex-Staatsanwalt und Richter am Amtsgericht in Kempten agieren neben Laiendarstellern echte Juristenkollegen.</desc>
@@ -2919,7 +2919,7 @@
     <icon src="http://img.tvspielfilm.de/41/f4/aa/545089d2e4b0d02df3aaf441.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260224100000 +0000" stop="20260224110000 +0000" channel="Sat1">
+  <programme start="20260224100000 +0000" stop="20260224110000 +0000" channel="SAT 1">
     <title lang="de">Richter Alexander Hold</title>
     <sub-title lang="de">Coffeeshop Milk &amp; Honey</sub-title>
     <desc lang="de">Vom Drogendeal bis zur Sexualstraftat – Alexander Hold löst Strafrechtsdelikte. An der Seite des Ex-Staatsanwalt und Richter am Amtsgericht in Kempten agieren neben Laiendarstellern echte Juristenkollegen.</desc>
@@ -2928,7 +2928,7 @@
     <icon src="http://img.tvspielfilm.de/41/f4/aa/545089d2e4b0d02df3aaf441.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260224110000 +0000" stop="20260224120000 +0000" channel="Sat1">
+  <programme start="20260224110000 +0000" stop="20260224120000 +0000" channel="SAT 1">
     <title lang="de">Richter Alexander Hold</title>
     <sub-title lang="de">So ein schöner Mord</sub-title>
     <desc lang="de">Vom Drogendeal bis zur Sexualstraftat – Alexander Hold löst Strafrechtsdelikte. An der Seite des Ex-Staatsanwalt und Richter am Amtsgericht in Kempten agieren neben Laiendarstellern echte Juristenkollegen.</desc>
@@ -2937,7 +2937,7 @@
     <icon src="http://img.tvspielfilm.de/41/f4/aa/545089d2e4b0d02df3aaf441.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260224120000 +0000" stop="20260224130000 +0000" channel="Sat1">
+  <programme start="20260224120000 +0000" stop="20260224130000 +0000" channel="SAT 1">
     <title lang="de">Richter Alexander Hold</title>
     <sub-title lang="de">Schöne Bescherung</sub-title>
     <desc lang="de">Vom Drogendeal bis zur Sexualstraftat – Alexander Hold löst Strafrechtsdelikte. An der Seite des Ex-Staatsanwalt und Richter am Amtsgericht in Kempten agieren neben Laiendarstellern echte Juristenkollegen.</desc>
@@ -2946,7 +2946,7 @@
     <icon src="http://img.tvspielfilm.de/41/f4/aa/545089d2e4b0d02df3aaf441.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260224130000 +0000" stop="20260224140000 +0000" channel="Sat1">
+  <programme start="20260224130000 +0000" stop="20260224140000 +0000" channel="SAT 1">
     <title lang="de">Auf Streife</title>
     <sub-title lang="de">Die Karawane zieht weiter</sub-title>
     <desc lang="de">Diebstahl und Einbruch, häusliche Gewalt, Ruhestörung, Schulschwänzer oder Nachbarschaftsstreitigkeiten – auf der Basis echter Fälle wird der Alltag von Streifenpolizisten nachgestellt.</desc>
@@ -2955,7 +2955,7 @@
     <icon src="http://img.tvspielfilm.de/c3/c7/20/58a47462f033af03f720c7c3.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260224140000 +0000" stop="20260224150000 +0000" channel="Sat1">
+  <programme start="20260224140000 +0000" stop="20260224150000 +0000" channel="SAT 1">
     <title lang="de">Auf Streife</title>
     <sub-title lang="de">Klein allein</sub-title>
     <desc lang="de">Diebstahl und Einbruch, häusliche Gewalt, Ruhestörung, Schulschwänzer oder Nachbarschaftsstreitigkeiten – auf der Basis echter Fälle wird der Alltag von Streifenpolizisten nachgestellt.</desc>
@@ -2964,7 +2964,7 @@
     <icon src="http://img.tvspielfilm.de/c3/c7/20/58a47462f033af03f720c7c3.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260224150000 +0000" stop="20260224160000 +0000" channel="Sat1">
+  <programme start="20260224150000 +0000" stop="20260224160000 +0000" channel="SAT 1">
     <title lang="de">Lebensretter hautnah – Wenn jede Sekunde zählt</title>
     <desc lang="de">Was macht die Arbeit von Rettungssanitätern aus? 15 Kameras begleiten Sanitäter und Ärzte bei ihren Einsätzen und wollen so für den Zuschauer erlebbar machen, wie es sich anfühlt, Leben zu retten.</desc>
     <date>2026</date>
@@ -2972,7 +2972,7 @@
     <icon src="http://img.tvspielfilm.de/09/1f/fe/6515567a7ad4a05f2dfe1f09.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260224160000 +0000" stop="20260224163000 +0000" channel="Sat1">
+  <programme start="20260224160000 +0000" stop="20260224163000 +0000" channel="SAT 1">
     <title lang="de">NOTRUF</title>
     <sub-title lang="de">Mein eigener Unfall</sub-title>
     <desc lang="de">Die Kultsendung ist zurück – dieses Mal auf SAT.1! Bärbel Schäfer übernimmt: "Rettungskräfte und Notfallärzte leisten eine außergewöhnliche Arbeit. Es sind Menschen, die versuchen, Leben zu retten. Leider werden sie heutzutage auch angegriffen und daran gehindert, ihren Job zu machen. Wenn man das macht, kann es Menschenleben kosten. Das ist mir ein Rätsel und trifft bei mir auf völliges Unverständnis. Mit 'NOTRUF' wollen wir diesen 'echten Helden' Respekt verschaffen und die Anerkennung geben, die sie mehr als verdienen."\n\nUm die 84.000 Notrufe gehen täglich in den deutschen Rettungsleitstellen ein – eine utopische Zahl, welche vollen Einsatz von den Rettungskräften fordert. Mit dem Notruf beginnt für sie der Kampf gegen die Zeit, um zu helfen und Menschenleben zu retten. Die Notsituationen werden laut SAT.1 in Echtzeit nachgestellt. Der Sender zeigt ihre tägliche Arbeit.</desc>
@@ -2981,7 +2981,7 @@
     <icon src="http://img.tvspielfilm.de/09/1f/fe/6515567a7ad4a05f2dfe1f09.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260224163000 +0000" stop="20260224170000 +0000" channel="Sat1">
+  <programme start="20260224163000 +0000" stop="20260224170000 +0000" channel="SAT 1">
     <title lang="de">NOTRUF; oder SAT.1 Regional-Magazine</title>
     <sub-title lang="de">Auch die Polizei braucht mal Hilfe</sub-title>
     <desc lang="de">Die Kultsendung ist zurück – dieses Mal auf SAT.1! Bärbel Schäfer übernimmt: "Rettungskräfte und Notfallärzte leisten eine außergewöhnliche Arbeit. Es sind Menschen, die versuchen, Leben zu retten. Leider werden sie heutzutage auch angegriffen und daran gehindert, ihren Job zu machen. Wenn man das macht, kann es Menschenleben kosten. Das ist mir ein Rätsel und trifft bei mir auf völliges Unverständnis. Mit 'NOTRUF' wollen wir diesen 'echten Helden' Respekt verschaffen und die Anerkennung geben, die sie mehr als verdienen."\n\nUm die 84.000 Notrufe gehen täglich in den deutschen Rettungsleitstellen ein – eine utopische Zahl, welche vollen Einsatz von den Rettungskräften fordert. Mit dem Notruf beginnt für sie der Kampf gegen die Zeit, um zu helfen und Menschenleben zu retten. Die Notsituationen werden laut SAT.1 in Echtzeit nachgestellt. Der Sender zeigt ihre tägliche Arbeit.</desc>
@@ -2990,7 +2990,7 @@
     <icon src="http://img.tvspielfilm.de/09/1f/fe/6515567a7ad4a05f2dfe1f09.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260224170000 +0000" stop="20260224173000 +0000" channel="Sat1">
+  <programme start="20260224170000 +0000" stop="20260224173000 +0000" channel="SAT 1">
     <title lang="de">Lenßen hilft</title>
     <sub-title lang="de">Liebe 2.0</sub-title>
     <desc lang="de">Endlich ist Ingo Lenßen wieder im SAT.1-Tagesprogramm zu sehen, diesmal mit einem neuen Konzept und einem verstärkten Team. In dem Format "Lenßen hilft.</desc>
@@ -2999,7 +2999,7 @@
     <icon src="http://img.tvspielfilm.de/19/90/14/5f7aed758189650837149019.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260224173000 +0000" stop="20260224180000 +0000" channel="Sat1">
+  <programme start="20260224173000 +0000" stop="20260224180000 +0000" channel="SAT 1">
     <title lang="de">Lenßen hilft</title>
     <sub-title lang="de">Lügenherz</sub-title>
     <desc lang="de">Endlich ist Ingo Lenßen wieder im SAT.1-Tagesprogramm zu sehen, diesmal mit einem neuen Konzept und einem verstärkten Team. In dem Format "Lenßen hilft.</desc>
@@ -3008,7 +3008,7 @@
     <icon src="http://img.tvspielfilm.de/19/90/14/5f7aed758189650837149019.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260224180000 +0000" stop="20260224184500 +0000" channel="Sat1">
+  <programme start="20260224180000 +0000" stop="20260224184500 +0000" channel="SAT 1">
     <title lang="de">Die Landarztpraxis</title>
     <sub-title lang="de">Die wirklich wahren Dinge ..</sub-title>
     <desc lang="de">Infos zur Serie:\n\nFür einen Neuanfang zieht Dr. Sarah König (Caroline Frier) zusammen mit ihrer Teenie-Tochter Leo von Berlin ins idyllische Wiesenkirchen, am Ufer des Schliersees. Während sie Bäuerinnen und Bauern, Bergsteigerinnen und Bergsteiger, Feriengäste und die ein oder andere Kuh versorgt, wird sie privat an ihre Grenzen gebracht. Denn sowohl ihr alter Jugendfreund, Landarzt Dr. Fabian Kroiß (Oliver Franck) und der Bergretter Max (Alexander Koll) verdrehen ihr den Kopf. Gleichzeitig wird Sarah von ihrer Vergangenheit eingeholt und muss dadurch um ihre Zukunft in Wiesenkirchen bangen...</desc>
@@ -3032,7 +3032,7 @@
     <country lang="de">D</country>
     <episode-num system="onscreen">S4 E38/240</episode-num>
   </programme>
-  <programme start="20260224184500 +0000" stop="20260224191500 +0000" channel="Sat1">
+  <programme start="20260224184500 +0000" stop="20260224191500 +0000" channel="SAT 1">
     <title lang="de">SAT.1 :newstime</title>
     <desc lang="de">In dieser Nachrichtensendung informiert das Moderations-Duo Claudia von Brauchitsch und Marc Bator live im Wechsel über die wichtigsten, tagesaktuellen Geschehnisse in Politik, Wirtschaft, Gesellschaft und dem Sport.</desc>
     <date>2026</date>
@@ -3040,7 +3040,7 @@
     <icon src="http://img.tvspielfilm.de/f0/b5/23/649d4dcefc89663a9923b5f0.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260224191500 +0000" stop="20260224211500 +0000" channel="Sat1">
+  <programme start="20260224191500 +0000" stop="20260224211500 +0000" channel="SAT 1">
     <title lang="de">RONZHEIMER</title>
     <sub-title lang="de">Wie geht's, Deutschland? – Bürgergeld</sub-title>
     <desc lang="de">Paul Ronzheimer, jüngst mit dem Bambi für „Kultur – Podcasts“ und dem Pressefreiheitspreis für seine Auslands-, Kriegs- und Krisenberichterstattung ausgezeichnet, fragt wieder, wie es Deutschland eigentlich geht. In Hannover zeigen gegensätzliche Lebensrealitäten die Bruchlinien des Sozialstaats: Ein Influencer inszeniert sein Leben auf Staatskosten, während eine alleinerziehende Mutter trotz Arbeitswillen immer wieder ausgebremst wird. Andere haben sich dauerhaft im System eingerichtet. \n\n5 Ausgaben (2. Staffel), dienstags.</desc>
@@ -3049,7 +3049,7 @@
     <icon src="http://img.tvspielfilm.de/4b/81/bc/66d98ff402977f2e0fbc814b.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260224211500 +0000" stop="20260224221500 +0000" channel="Sat1">
+  <programme start="20260224211500 +0000" stop="20260224221500 +0000" channel="SAT 1">
     <title lang="de">SPIEGEL TV _ Reportage</title>
     <sub-title lang="de">Neustart Rente – Wie das Geld im Alter reicht</sub-title>
     <desc lang="de">Immer mehr ältere Menschen kommen mit ihrer Rente nicht aus – und kehren Deutschland den Rücken. In Bulgarien sind die Lebenshaltungskosten deutlich niedriger. Christa und Heinz Kadur aus Wuppertal wagen einen Neuanfang in der Siedlung „Rentnerglück“ in Lozen.</desc>
@@ -3058,7 +3058,7 @@
     <icon src="http://img.tvspielfilm.de/0c/d3/f3/602113798189651233f3d30c.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260224221500 +0000" stop="20260225000500 +0000" channel="Sat1">
+  <programme start="20260224221500 +0000" stop="20260225000500 +0000" channel="SAT 1">
     <title lang="de">RONZHEIMER</title>
     <sub-title lang="de">Wie geht's, Deutschland? – Bürgergeld</sub-title>
     <desc lang="de">In der neuen Reportage-Reihe hört sich Paul Ronzheimer die Bedenken und Ängste der Deutschen an. Ob Rechtsruck, Migration oder Armut – der Journalist verschafft sich ein Bild von der Lage und bringt die Perspektiven der Menschen an die Öffentlichkeit.\n\nJournalist des Jahres 2022 wird man, wenn man zuhört und Hintergründe einordnen kann. Paul Ronzheimer begann seine journalistische Karriere 2009 als Parlamentskorrespondent in Berlin. Später berichtete als Kriegsreporter aus der Ukraine, wo er und sein Team am 22. Juni 2022 in Lyssytschansk unter Beschuss gerieten. Alle Beteiligten blieben jedoch unverletzt. Für die Ukraine-Berichterstattung wurde Ronzheimer zusammen mit seiner Kollegin Katrin Eigendorf als „Journalistin &amp; Journalist des Jahres 2022“ ausgezeichnet.</desc>
@@ -3067,7 +3067,7 @@
     <icon src="http://img.tvspielfilm.de/4b/81/bc/66d98ff402977f2e0fbc814b.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260225000500 +0000" stop="20260225005500 +0000" channel="Sat1">
+  <programme start="20260225000500 +0000" stop="20260225005500 +0000" channel="SAT 1">
     <title lang="de">SPIEGEL TV _ Reportage</title>
     <sub-title lang="de">Neustart Rente – Wie das Geld im Alter reicht</sub-title>
     <desc lang="de">Infos zur Reihe:\n\nDie „Spiegel TV Reportage“ befasst sich jeweils mit den unterschiedlichsten Themen aus Politik, Wirtschaft und Gesellschaft. Die Inhalte erstrecken sich von Corona-Auswirkungen über die G20-Ausschreitungen bis hin zu Fleischskandalen.</desc>
@@ -3076,7 +3076,7 @@
     <icon src="http://img.tvspielfilm.de/0c/d3/f3/602113798189651233f3d30c.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260225005500 +0000" stop="20260225022500 +0000" channel="Sat1">
+  <programme start="20260225005500 +0000" stop="20260225022500 +0000" channel="SAT 1">
     <title lang="de">Lebensretter hautnah – Wenn jede Sekunde zählt</title>
     <desc lang="de">Was macht die Arbeit von Rettungssanitätern aus? 15 Kameras begleiten Sanitäter und Ärzte bei ihren Einsätzen und wollen so für den Zuschauer erlebbar machen, wie es sich anfühlt, Leben zu retten.</desc>
     <date>2021</date>
@@ -3084,7 +3084,7 @@
     <icon src="http://img.tvspielfilm.de/09/1f/fe/6515567a7ad4a05f2dfe1f09.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260225022500 +0000" stop="20260225031000 +0000" channel="Sat1">
+  <programme start="20260225022500 +0000" stop="20260225031000 +0000" channel="SAT 1">
     <title lang="de">Auf Streife – Die Spezialisten</title>
     <sub-title lang="de">Kleider machen Leute</sub-title>
     <desc lang="de">Ableger der Polizisten-Pseudo-Doku „Auf Streife“. Neben den bekannten Protagonisten aus dem Nachmittagsprogramm werden auch Autobahn- und Wasserschutzpolizisten sowie Feuerwehrmänner, Notärzte und Zollbeamte in ihrem Joballtag begleitet.</desc>
@@ -3093,7 +3093,7 @@
     <icon src="http://img.tvspielfilm.de/c3/c7/20/58a47462f033af03f720c7c3.jpeg" />
     <country lang="de">D</country>
   </programme>
-  <programme start="20260225031000 +0000" stop="20260225040500 +0000" channel="Sat1">
+  <programme start="20260225031000 +0000" stop="20260225040500 +0000" channel="SAT 1">
     <title lang="de">Auf Streife – Die Spezialisten</title>
     <sub-title lang="de">Echt ätzend!</sub-title>
     <desc lang="de">Ableger der Polizisten-Pseudo-Doku „Auf Streife“. Neben den bekannten Protagonisten aus dem Nachmittagsprogramm werden auch Autobahn- und Wasserschutzpolizisten sowie Feuerwehrmänner, Notärzte und Zollbeamte in ihrem Joballtag begleitet.</desc>
