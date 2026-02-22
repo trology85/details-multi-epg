@@ -23,11 +23,12 @@ WANTED_CHANNELS = {
 
 # --- YENI KAYNAK KANALLARI (Tivibu & Tivi6) ---
 TIVIBU_CHANNELS = {
-    "TivibuSpor1.tr": "TİVİBU SPOR 1",
-    "TivibuSpor2.tr": "TİVİBU SPOR 2",
-    "TivibuSpor3.tr": "TİVİBU SPOR 3",
-    "TivibuSpor4.tr": "TİVİBU SPOR 4",
-    "TIVI6.tr": "Tivi6"
+    "TİVİBU.SPOR.1.tr": "TİVİBU SPOR 1",
+    "TİVİBU.SPOR.2.tr": "TİVİBU SPOR 2",
+    "TİVİBU.SPOR.3.tr": "TİVİBU SPOR 3",
+    "TİVİBU.SPOR.4.tr": "TİVİBU SPOR 4",
+    "TİVİ6.tr": "Tivi6",
+    "TİVİ.6.tr": "TİVİ6"
 }
 
 def fetch_turksat_weekly(master_root):
