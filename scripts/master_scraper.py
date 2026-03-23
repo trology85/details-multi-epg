@@ -44,24 +44,47 @@ def get_program_detail(prog_id):
     if not prog_id: return None
     if prog_id in description_cache: return description_cache[prog_id]
     
+    # Türksat'ın popup adresi
     detail_url = f"https://www.turksatkablo.com.tr/yayin-akisi-detay.aspx?id={prog_id}"
+    
+    # Chrome'un Network sekmesinde gördüğümüz o meşhur "Header" bilgileri:
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-        'Referer': 'https://www.turksatkablo.com.tr/yayin-akisi.aspx'
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,webp,*/*;q=0.8',
+        'Accept-Language': 'tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7',
+        'Referer': 'https://www.turksatkablo.com.tr/yayin-akisi.aspx', # "Siteden geliyorum" kanıtı
+        'Connection': 'keep-alive'
     }
     
     try:
-        resp = requests.get(detail_url, headers=headers, verify=False, timeout=5)
-        if resp.status_code == 200:
-            if "program-detay" in resp.text:
-                match = re.search(r'<div class="program-detay">(.*?)</div>', resp.text, re.DOTALL)
-                if match:
-                    desc = match.group(1).strip()
-                    desc = re.sub('<[^<]+?>', '', desc)
-                    description_cache[prog_id] = desc
-                    return desc
-    except:
-        pass
+        # Session kullanarak çerezleri (cookie) simüle edelim, daha inandırıcı olur
+        with requests.Session() as s:
+            resp = s.get(detail_url, headers=headers, verify=False, timeout=10)
+            
+            if resp.status_code == 200:
+                # Gelen HTML'in içinde 'program-detay' class'ı var mı?
+                if "program-detay" in resp.text:
+                    # Regex ile div'in içindeki metni cımbızla çekiyoruz
+                    match = re.search(r'<div class="program-detay">(.*?)</div>', resp.text, re.DOTALL)
+                    if match:
+                        raw_desc = match.group(1).strip()
+                        # HTML etiketlerini (<b>, <br> vb.) temizle
+                        clean_desc = re.sub('<[^<]+?>', '', raw_desc)
+                        # HTML özel karakterlerini (&nbsp; vb.) temizle
+                        clean_desc = clean_desc.replace('&nbsp;', ' ').replace('\r', '').replace('\n', ' ')
+                        
+                        if len(clean_desc) > 5:
+                            print(f"      ↳ 📝 Detay Çekildi: {clean_desc[:40]}...")
+                            description_cache[prog_id] = clean_desc
+                            return clean_desc
+                else:
+                    # Loglarda bunu görürsek, ID doğru ama içerik henüz girilmemiş demektir
+                    print(f"      ↳ ⚠️ Sayfa yüklendi ama içerik boş (ID: {prog_id})")
+            else:
+                print(f"      ↳ ❌ Sunucu Hatası: {resp.status_code}")
+    except Exception as e:
+        print(f"      ↳ ❌ Hata oluştu: {str(e)[:50]}")
+    
     return None
 
 def fetch_turksat_weekly(master_root):
