@@ -102,6 +102,8 @@ def fetch_turksat_weekly(master_root):
                             ET.SubElement(c_elem, "display-name").text = chan_name_orig
 
                         is_target = any(target in chan_name_lower for target in DETAIL_CHANNELS)
+                        if is_target:
+    print(f"      🔍 {chan_name_orig} için programlar taranıyor...") # Bu satırı ekle
                         if is_target and i == 0:
                             print(f"   🎯 Hedef Kanal Yakalandı: {chan_name_orig} (kID: {chan_kID})")
 
