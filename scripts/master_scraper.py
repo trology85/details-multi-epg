@@ -31,12 +31,11 @@ TIVIBU_CHANNELS = {
     "TİVİ.6.tr": "TİVİ6"
 }
 
-# --- HEDEF TÜRK KANALLARI (Sitede Görünen Sade Halleri) ---
-# Küçük harf yaparak kontrolü garantiye alıyoruz.
+# --- HEDEF KANALLAR (Sitede Görünen En Sade Haller) ---
 DETAIL_CHANNELS = [
-    "trt 1", "atv", "now", "show", "kanal d", "star", "tv8", "tv 8,5", 
-    "beyaz tv", "kanal 7", "cnbc-e", "trt spor", "360", "tlc", "dmax", 
-    "teve2", "trt 2", "a2", "trt belgesel", "tgrt haber"
+    "trt 1", "atv", "now", "show", "kanal d", "star", "tv8", "tv 8,5", "tv8.5",
+    "beyaz tv", "kanal 7", "cnbc", "trt spor", "360", "tlc", "dmax", 
+    "teve2", "trt 2", "a2", "belgesel", "tgrt"
 ]
 
 description_cache = {}
@@ -46,7 +45,6 @@ def get_program_detail(prog_id):
     if prog_id in description_cache: return description_cache[prog_id]
     
     detail_url = f"https://www.turksatkablo.com.tr/yayin-akisi-detay.aspx?id={prog_id}"
-    # Gerçek bir tarayıcı gibi davranması için headers güncellendi
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
         'Referer': 'https://www.turksatkablo.com.tr/yayin-akisi.aspx'
@@ -59,20 +57,17 @@ def get_program_detail(prog_id):
                 match = re.search(r'<div class="program-detay">(.*?)</div>', resp.text, re.DOTALL)
                 if match:
                     desc = match.group(1).strip()
-                    desc = re.sub('<[^<]+?>', '', desc) # HTML etiketlerini temizle
-                    print(f"   ↳ 📝 Detay Alındı: {desc[:40]}...") 
+                    desc = re.sub('<[^<]+?>', '', desc)
                     description_cache[prog_id] = desc
                     return desc
-            else:
-                print(f"   ↳ ❌ Div bulunamadı ID: {prog_id}")
-    except Exception as e:
-        print(f"   ↳ ❌ Bağlantı Hatası: {e}")
+    except:
+        pass
     return None
 
 def fetch_turksat_weekly(master_root):
     tr_now = datetime.utcnow() + timedelta(hours=3)
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
-    print("🇹🇷 Türksat Haftalık Zenginleştirilmiş Tarama Başlatıldı...")
+    print("🇹🇷 Türksat Haftalık Detaylı Tarama Başlatıldı...")
     
     for i in range(7):
         target_date = tr_now + timedelta(days=i)
@@ -84,9 +79,9 @@ def fetch_turksat_weekly(master_root):
             if r.status_code == 200:
                 data = r.json()
                 if 'k' in data:
-                    print(f"✅ {target_date.strftime('%d.%m.%Y')} işleniyor...")
+                    print(f"📅 {target_date.strftime('%d.%m.%Y')} işleniyor...")
                     for channel in data.get('k', []):
-                        chan_name_orig = channel.get('n', 'Unknown').strip()
+                        chan_name_orig = channel.get('n', '').strip()
                         chan_name_lower = chan_name_orig.lower()
                         chan_id = chan_name_orig.replace(" ", ".")
                         
@@ -94,8 +89,12 @@ def fetch_turksat_weekly(master_root):
                             c_elem = ET.SubElement(master_root, "channel", id=chan_id)
                             ET.SubElement(c_elem, "display-name").text = chan_name_orig
 
-                        # ESNEK KONTROL: Listemizdeki kelime kanal adının içinde geçiyor mu?
+                        # --- RADAR: Hedef kanal mı kontrol et ---
                         is_target = any(target in chan_name_lower for target in DETAIL_CHANNELS)
+                        
+                        # Sadece ilk günde hangi kanalları yakaladığımızı logda görelim
+                        if is_target and i == 0:
+                            print(f"   🎯 Hedef Yakalandı: {chan_name_orig}")
 
                         date_prefix = target_date.strftime('%Y%m%d')
                         for prog in channel.get('p', []):
@@ -112,7 +111,6 @@ def fetch_turksat_weekly(master_root):
                             p_elem = ET.SubElement(master_root, "programme", start=start, stop=stop, channel=chan_id)
                             ET.SubElement(p_elem, "title", lang="tr").text = prog.get('b', 'Yayın Akışı')
                             
-                            # Eğer hedef kanalsa detayı çekmeye çalış
                             if is_target:
                                 prog_id = prog.get('i')
                                 if prog_id:
@@ -120,7 +118,9 @@ def fetch_turksat_weekly(master_root):
                                     if description:
                                         ET.SubElement(p_elem, "desc", lang="tr").text = description
         except Exception as e:
-            print(f"⚠️ Türksat hatası ({target_date.strftime('%d.%m')}): {e}")
+            print(f"⚠️ Türksat hatası: {e}")
+
+# fetch_tivibu_spor ve create_master kısımları aynı kalıyor...
 
 def fetch_tivibu_spor(master_root):
     url = "https://epgshare01.online/epgshare01/epg_ripper_TR3.xml.gz"
@@ -137,52 +137,37 @@ def fetch_tivibu_spor(master_root):
                         dn = elem.find("display-name")
                         if dn is not None: dn.text = TIVIBU_CHANNELS[orig_id]
                         master_root.append(elem)
-                
                 if elem.tag == "programme":
                     orig_id = elem.get("channel")
                     if orig_id in TIVIBU_CHANNELS:
                         elem.set("channel", TIVIBU_CHANNELS[orig_id])
                         master_root.append(elem)
-        print("✅ Tivibu ve TİVİ6 başarıyla eklendi.")
-    except Exception as e:
-        print(f"⚠️ Tivibu/TİVİ6 hatası: {e}")
+    except: pass
 
 def create_master():
     master_root = ET.Element("tv", {"generator-info-name": "Weekly Master Scraper"})
     fetch_turksat_weekly(master_root)
-
     for country, url in SOURCES.items():
-        print(f"🌍 {country} verisi işleniyor...")
         try:
             resp = requests.get(url, timeout=60)
             with gzip.GzipFile(fileobj=io.BytesIO(resp.content)) as f:
                 context = ET.iterparse(f, events=("end",))
                 for _, elem in context:
-                    if elem.tag == "channel":
-                        orig_id = elem.get("id")
-                        if orig_id in WANTED_CHANNELS:
-                            elem.set("id", WANTED_CHANNELS[orig_id])
-                            master_root.append(elem)
-                    
-                    if elem.tag == "programme":
-                        orig_id = elem.get("channel")
-                        if orig_id in WANTED_CHANNELS:
-                            elem.set("channel", WANTED_CHANNELS[orig_id])
-                            master_root.append(elem)
-        except Exception as e:
-            print(f"⚠️ {country} hatası: {e}")
-
+                    if elem.tag == "channel" and elem.get("id") in WANTED_CHANNELS:
+                        elem.set("id", WANTED_CHANNELS[elem.get("id")])
+                        master_root.append(elem)
+                    if elem.tag == "programme" and elem.get("channel") in WANTED_CHANNELS:
+                        elem.set("channel", WANTED_CHANNELS[elem.get("channel")])
+                        master_root.append(elem)
+        except: pass
     fetch_tivibu_spor(master_root)
-
     os.makedirs("epg", exist_ok=True)
     tree = ET.ElementTree(master_root)
     xml_path = "epg/master_epg.xml"
-    
     tree.write(xml_path, encoding="utf-8", xml_declaration=True)
     with open(xml_path, 'rb') as f_in, gzip.open(xml_path + ".gz", 'wb') as f_out:
         f_out.writelines(f_in)
-    
-    print("🚀 Tüm kaynaklar birleştirildi. Haftalık Master EPG Hazır!")
+    print("🚀 Haftalık Master EPG Hazır!")
 
 if __name__ == "__main__":
     create_master()
