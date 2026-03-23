@@ -65,6 +65,13 @@ def get_program_detail(prog_id):
         pass
     return None
 
+# --- HEDEF TÜRK KANALLARI (Daha Garanti Liste) ---
+DETAIL_CHANNELS = [
+    "TRT 1", "ATV", "NOW", "SHOW TV", "KANAL D", "STAR", "TV8", "TV 8,5", 
+    "BEYAZ TV", "KANAL 7", "CNBC-E", "TRT SPOR", "360 TV", "TLC", "DMAX", 
+    "TV2", "TRT 2", "A2", "TRT BELGESEL", "TGRT HABER"
+]
+
 def fetch_turksat_weekly(master_root):
     tr_now = datetime.utcnow() + timedelta(hours=3)
     headers = {'User-Agent': 'Mozilla/5.0'}
@@ -82,19 +89,19 @@ def fetch_turksat_weekly(master_root):
                 if 'k' in data:
                     print(f"✅ {target_date.strftime('%d.%m.%Y')} işleniyor...")
                     for channel in data.get('k', []):
-                        chan_name = channel.get('n', 'Unknown')
+                        chan_name = channel.get('n', 'Unknown').strip()
+                        # ID oluştururken boşlukları noktaya çeviriyoruz (XML standardı için)
                         chan_id = chan_name.replace(" ", ".")
                         
-                        # Kanal elementini oluştur (Sadece ilk gün için)
                         if i == 0:
                             c_elem = ET.SubElement(master_root, "channel", id=chan_id)
                             ET.SubElement(c_elem, "display-name").text = chan_name
 
                         date_prefix = target_date.strftime('%Y%m%d')
                         for prog in channel.get('p', []):
+                            # ... (Zaman hesaplamaları aynı kalıyor) ...
                             start_time = prog.get('c', '').replace(":", "")
                             stop_time = prog.get('d', '').replace(":", "")
-                            
                             current_stop_prefix = date_prefix
                             if int(stop_time) < int(start_time):
                                 next_day = target_date + timedelta(days=1)
@@ -106,17 +113,17 @@ def fetch_turksat_weekly(master_root):
                             p_elem = ET.SubElement(master_root, "programme", start=start, stop=stop, channel=chan_id)
                             ET.SubElement(p_elem, "title", lang="tr").text = prog.get('b', 'Yayın Akışı')
                             
-                            # --- AÇIKLAMA EKLEME (Sadece Seçili Kanallar İçin) ---
-                            if chan_name in DETAIL_CHANNELS:
-                                prog_id = prog.get('i') # JSON'daki 'i' alanı programın ID'sidir
-                                description = get_program_detail(prog_id)
-                                if description:
-                                    ET.SubElement(p_elem, "desc", lang="tr").text = description
-
+                            # --- KRİTİK DÜZELTME BURADA ---
+                            # Hem boşluklu hem noktalı halini kontrol et
+                            if chan_name in DETAIL_CHANNELS or chan_id in DETAIL_CHANNELS:
+                                prog_id = prog.get('i')
+                                if prog_id:
+                                    description = get_program_detail(prog_id)
+                                    if description:
+                                        # EPG verisinde <desc> ekle
+                                        ET.SubElement(p_elem, "desc", lang="tr").text = description
         except Exception as e:
             print(f"⚠️ Türksat hatası ({target_date.strftime('%d.%m')}): {e}")
-
-# ... (Diğer fetch_tivibu_spor ve create_master fonksiyonları aynı kalacak) ...
 
 def fetch_tivibu_spor(master_root):
     url = "https://epgshare01.online/epgshare01/epg_ripper_TR3.xml.gz"
