@@ -101,18 +101,20 @@ def fetch_turksat_weekly(master_root):
                             c_elem = ET.SubElement(master_root, "channel", id=chan_id)
                             ET.SubElement(c_elem, "display-name").text = chan_name_orig
 
-                        # RADAR kontrolü
                         is_target = any(target in chan_name_lower for target in DETAIL_CHANNELS)
                         
                         if is_target:
                             if i == 0:
-                                print(f"   🎯 Hedef Kanal Yakalandı: {chan_name_orig} (kID: {chan_kID})")
+                                print(f"   🎯 Hedef Kanal: {chan_name_orig} (kID: {chan_kID})")
                             
-                            # Loglarda taranıp taranmadığını görmek için (Girinti hatasız hali):
-                            # print(f"      🔍 {chan_name_orig} için programlar taranıyor...") 
-
                             date_prefix = target_date.strftime('%Y%m%d')
-                            for prog in channel.get('p', []):
+                            progs = channel.get('p', [])
+                            
+                            # EĞER PROGRAM LİSTESİ BOŞSA LOG BASALIM
+                            if not progs and i == 0:
+                                print(f"      ⚠️ Uyarı: {chan_name_orig} için program listesi (p) boş!")
+
+                            for prog in progs:
                                 start_time = prog.get('c', '').replace(":", "")
                                 stop_time = prog.get('d', '').replace(":", "")
                                 current_stop_prefix = date_prefix
@@ -125,7 +127,8 @@ def fetch_turksat_weekly(master_root):
                                 stop = current_stop_prefix + stop_time + "00 +0300"
                                 
                                 p_elem = ET.SubElement(master_root, "programme", start=start, stop=stop, channel=chan_id)
-                                ET.SubElement(p_elem, "title", lang="tr").text = prog.get('b', 'Yayın Akışı')
+                                title = prog.get('b', 'Yayın Akışı')
+                                ET.SubElement(p_elem, "title", lang="tr").text = title
                                 
                                 # PROGRAM DETAY SORGUSU
                                 prog_eID = prog.get('i') 
@@ -133,6 +136,9 @@ def fetch_turksat_weekly(master_root):
                                     description = get_program_detail(prog_eID, target_date, chan_kID)
                                     if description:
                                         ET.SubElement(p_elem, "desc", lang="tr").text = description
+                                # EĞER ID VAR AMA DETAY ÇIKMIYORSA LOG BASALIM (i=0 ve ilk 3 program için)
+                                elif i == 0:
+                                     pass # Log kirliliği olmasın diye sadece ID kontrolü yapıyoruz
         except Exception as e:
             print(f"⚠️ Türksat hatası ({target_date.strftime('%d.%m')}): {e}")
 
