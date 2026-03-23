@@ -101,29 +101,33 @@ def fetch_turksat_weekly(master_root):
                             c_elem = ET.SubElement(master_root, "channel", id=chan_id)
                             ET.SubElement(c_elem, "display-name").text = chan_name_orig
 
+                        # RADAR kontrolü
                         is_target = any(target in chan_name_lower for target in DETAIL_CHANNELS)
+                        
                         if is_target:
-    print(f"      🔍 {chan_name_orig} için programlar taranıyor...") # Bu satırı ekle
-                        if is_target and i == 0:
-                            print(f"   🎯 Hedef Kanal Yakalandı: {chan_name_orig} (kID: {chan_kID})")
+                            if i == 0:
+                                print(f"   🎯 Hedef Kanal Yakalandı: {chan_name_orig} (kID: {chan_kID})")
+                            
+                            # Loglarda taranıp taranmadığını görmek için (Girinti hatasız hali):
+                            # print(f"      🔍 {chan_name_orig} için programlar taranıyor...") 
 
-                        date_prefix = target_date.strftime('%Y%m%d')
-                        for prog in channel.get('p', []):
-                            start_time = prog.get('c', '').replace(":", "")
-                            stop_time = prog.get('d', '').replace(":", "")
-                            current_stop_prefix = date_prefix
-                            
-                            if int(stop_time) < int(start_time):
-                                next_day = target_date + timedelta(days=1)
-                                current_stop_prefix = next_day.strftime('%Y%m%d')
+                            date_prefix = target_date.strftime('%Y%m%d')
+                            for prog in channel.get('p', []):
+                                start_time = prog.get('c', '').replace(":", "")
+                                stop_time = prog.get('d', '').replace(":", "")
+                                current_stop_prefix = date_prefix
+                                
+                                if int(stop_time) < int(start_time):
+                                    next_day = target_date + timedelta(days=1)
+                                    current_stop_prefix = next_day.strftime('%Y%m%d')
 
-                            start = date_prefix + start_time + "00 +0300"
-                            stop = current_stop_prefix + stop_time + "00 +0300"
-                            
-                            p_elem = ET.SubElement(master_root, "programme", start=start, stop=stop, channel=chan_id)
-                            ET.SubElement(p_elem, "title", lang="tr").text = prog.get('b', 'Yayın Akışı')
-                            
-                            if is_target:
+                                start = date_prefix + start_time + "00 +0300"
+                                stop = current_stop_prefix + stop_time + "00 +0300"
+                                
+                                p_elem = ET.SubElement(master_root, "programme", start=start, stop=stop, channel=chan_id)
+                                ET.SubElement(p_elem, "title", lang="tr").text = prog.get('b', 'Yayın Akışı')
+                                
+                                # PROGRAM DETAY SORGUSU
                                 prog_eID = prog.get('i') 
                                 if prog_eID and chan_kID:
                                     description = get_program_detail(prog_eID, target_date, chan_kID)
