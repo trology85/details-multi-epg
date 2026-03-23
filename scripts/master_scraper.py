@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 import urllib3
 import re
 import html as html_lib
-import requests
+
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -165,7 +165,7 @@ def fetch_turksat_weekly(master_root):
                                 # PROGRAM DETAY SORGUSU
                                 prog_eID = prog.get('i') 
                                 if prog_eID and chan_kID:
-                                    description = get_program_detail(prog_eID, target_date, chan_kID)
+                                    description = get_program_detail(prog_eID, target_date, chan_kID, chan_name_orig)
                                     if description:
                                         ET.SubElement(p_elem, "desc", lang="tr").text = description
                                 # EĞER ID VAR AMA DETAY ÇIKMIYORSA LOG BASALIM (i=0 ve ilk 3 program için)
