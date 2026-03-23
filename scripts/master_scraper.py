@@ -43,26 +43,32 @@ DETAIL_CHANNELS = [
 description_cache = {}
 
 def get_program_detail(prog_id):
-    """Türksat sitesinden program detayını çeken yardımcı fonksiyon"""
     if not prog_id: return None
     if prog_id in description_cache: return description_cache[prog_id]
     
     detail_url = f"https://www.turksatkablo.com.tr/yayin-akisi-detay.aspx?id={prog_id}"
-    headers = {'User-Agent': 'Mozilla/5.0'}
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
+    
+    print(f"🔍 Detay isteniyor ID: {prog_id} -> URL: {detail_url}") # TEST SATIRI
+    
     try:
-        # 2 saniye timeout verdik ki sistem takılmasın
-        resp = requests.get(detail_url, headers=headers, verify=False, timeout=2)
+        resp = requests.get(detail_url, headers=headers, verify=False, timeout=5)
         if resp.status_code == 200:
-            # HTML içindeki açıklama kısmını basit bir Regex ile çekiyoruz
-            match = re.search(r'<div class="program-detay">(.*?)</div>', resp.text, re.DOTALL)
-            if match:
-                desc = match.group(1).strip()
-                # HTML taglarını temizle
-                desc = re.sub('<[^<]+?>', '', desc)
-                description_cache[prog_id] = desc
-                return desc
-    except:
-        pass
+            # HTML içeriği boş mu geliyor kontrol edelim
+            if "program-detay" in resp.text:
+                match = re.search(r'<div class="program-detay">(.*?)</div>', resp.text, re.DOTALL)
+                if match:
+                    desc = match.group(1).strip()
+                    desc = re.sub('<[^<]+?>', '', desc)
+                    print(f"✅ Detay Alındı: {desc[:50]}...") # TEST SATIRI
+                    description_cache[prog_id] = desc
+                    return desc
+            else:
+                print(f"❌ Sayfa yüklendi ama 'program-detay' divi bulunamadı! ID: {prog_id}") # TEST SATIRI
+        else:
+            print(f"❌ HTTP Hatası: {resp.status_code} ID: {prog_id}") # TEST SATIRI
+    except Exception as e:
+        print(f"❌ Bağlantı Hatası: {e} ID: {prog_id}") # TEST SATIRI
     return None
 
 # --- HEDEF TÜRK KANALLARI (Daha Garanti Liste) ---
