@@ -6,6 +6,8 @@ import os
 from datetime import datetime, timedelta
 import urllib3
 import re
+import html as html_lib
+import requests
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -40,13 +42,18 @@ DETAIL_CHANNELS = [
 description_cache = {}
 
 def get_program_detail(prog_id, target_date, channel_id, expected_channel_name):
+    """
+    Türksat Detay Pop-up'ından (HTML) açıklamayı çeker.
+    """
     if not prog_id or not channel_id:
         return None
     
+    # Tarih parametrelerini ayıkla
     d = target_date.strftime("%d").lstrip('0')
     m = target_date.strftime("%m").lstrip('0')
     y = target_date.strftime("%Y")
     
+    # Senin tarayıcıda yakaladığın o 5 parametreli URL yapısı
     detail_url = f"https://www.turksatkablo.com.tr/yayin-akisi-program-detay.aspx?d={d}&m={m}&y={y}&kID={channel_id}&eID={prog_id}"
     
     headers = {
@@ -55,32 +62,45 @@ def get_program_detail(prog_id, target_date, channel_id, expected_channel_name):
     }
     
     try:
+        # SSL sertifika hatası almamak için verify=False (Türksat bazen sorun çıkarıyor)
         resp = requests.get(detail_url, headers=headers, verify=False, timeout=10)
+        
         if resp.status_code == 200:
-            html = resp.text
+            raw_html = resp.text
             
-            # 1. Adım: Kanal İsmi Doğrulama (İlk <h2> etiketine bakıyoruz)
-            # Senin attığın kodda: <h2>TV 8</h2>
-            chan_match = re.search(r'<h2>(.*?)</h2>', html)
+            # 1. Adım: Kanal İsmi Doğrulaması (Kırmızı okla gösterdiğin yer)
+            # HTML içindeki ilk <h2> etiketini yakalar
+            chan_match = re.search(r'<h2>(.*?)</h2>', raw_html)
             if chan_match:
                 found_channel = chan_match.group(1).strip().lower()
-                # Beklenen kanal ismi (örn: "tv 8") gelenin içindeyse devam et
-                if expected_channel_name.lower() in found_channel or found_channel in expected_channel_name.lower():
+                expected_clean = expected_channel_name.lower().replace(" hd", "").strip()
+                
+                # Eğer çekilen sayfadaki kanal ismi bizimkiyle örtüşüyorsa (örn: TV 8 = TV 8)
+                if expected_clean in found_channel or found_channel in expected_clean:
                     
-                    # 2. Adım: Açıklamayı Çek ( <p> etiketinin içindeki metin )
-                    desc_match = re.search(r'<p>(.*?)</p>', html, re.DOTALL)
+                    # 2. Adım: Program Açıklamasını (<p> etiketi) Çek
+                    desc_match = re.search(r'<p>(.*?)</p>', raw_html, re.DOTALL)
                     if desc_match:
                         clean_desc = desc_match.group(1).strip()
-                        # HTML kalıntılarını temizle (&#252; gibi karakterler için)
+                        
+                        # HTML etiketlerini temizle (örn: <br/> varsa gitsin)
                         clean_desc = re.sub('<[^<]+?>', '', clean_desc)
-                        import html as html_lib
+                        
+                        # HTML entity'lerini düzelt (örn: &#252; -> ü)
                         clean_desc = html_lib.unescape(clean_desc)
                         
-                        if len(clean_desc) > 10:
-                            print(f"      ↳ 📝 {expected_channel_name} Detayı Alındı: {clean_desc[:40]}...")
+                        # Eğer geçerli bir açıklama varsa log bas ve döndür
+                        if len(clean_desc) > 5:
+                            print(f"      ↳ 📝 {expected_channel_name} için detay başarıyla alındı.")
                             return clean_desc
+            else:
+                # Sayfa yüklendi ama h2 bulunamadıysa loglayalım (debug için)
+                # print(f"      ⚠️ {expected_channel_name} için sayfa yapısı farklı döndü.")
+                pass
+
     except Exception as e:
-        print(f"      ⚠️ Detay Hatası: {e}")
+        print(f"      ⚠️ Bağlantı hatası ({expected_channel_name}): {e}")
+        
     return None
 
 def fetch_turksat_weekly(master_root):
