@@ -39,7 +39,7 @@ DETAIL_CHANNELS = [
 
 description_cache = {}
 
-def get_program_detail(prog_id, target_date, channel_id):
+def get_program_detail(prog_id, target_date, channel_id, expected_channel_name):
     if not prog_id or not channel_id:
         return None
     
@@ -50,25 +50,37 @@ def get_program_detail(prog_id, target_date, channel_id):
     detail_url = f"https://www.turksatkablo.com.tr/yayin-akisi-program-detay.aspx?d={d}&m={m}&y={y}&kID={channel_id}&eID={prog_id}"
     
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
         'Referer': 'https://www.turksatkablo.com.tr/yayin-akisi.aspx'
     }
     
     try:
         resp = requests.get(detail_url, headers=headers, verify=False, timeout=10)
         if resp.status_code == 200:
-            text = resp.text
-            if "program-detay" in text:
-                match = re.search(r'<div class="program-detay">(.*?)</div>', text, re.DOTALL)
-                if match:
-                    raw_content = match.group(1).strip()
-                    clean_desc = re.sub('<[^<]+?>', '', raw_content)
-                    clean_desc = clean_desc.replace('&nbsp;', ' ').strip()
-                    if len(clean_desc) > 5:
-                        print(f"      ↳ 📝 Detay Başarılı ({prog_id}): {clean_desc[:35]}...")
-                        return clean_desc
-    except:
-        pass
+            html = resp.text
+            
+            # 1. Adım: Kanal İsmi Doğrulama (İlk <h2> etiketine bakıyoruz)
+            # Senin attığın kodda: <h2>TV 8</h2>
+            chan_match = re.search(r'<h2>(.*?)</h2>', html)
+            if chan_match:
+                found_channel = chan_match.group(1).strip().lower()
+                # Beklenen kanal ismi (örn: "tv 8") gelenin içindeyse devam et
+                if expected_channel_name.lower() in found_channel or found_channel in expected_channel_name.lower():
+                    
+                    # 2. Adım: Açıklamayı Çek ( <p> etiketinin içindeki metin )
+                    desc_match = re.search(r'<p>(.*?)</p>', html, re.DOTALL)
+                    if desc_match:
+                        clean_desc = desc_match.group(1).strip()
+                        # HTML kalıntılarını temizle (&#252; gibi karakterler için)
+                        clean_desc = re.sub('<[^<]+?>', '', clean_desc)
+                        import html as html_lib
+                        clean_desc = html_lib.unescape(clean_desc)
+                        
+                        if len(clean_desc) > 10:
+                            print(f"      ↳ 📝 {expected_channel_name} Detayı Alındı: {clean_desc[:40]}...")
+                            return clean_desc
+    except Exception as e:
+        print(f"      ⚠️ Detay Hatası: {e}")
     return None
 
 def fetch_turksat_weekly(master_root):
