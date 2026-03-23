@@ -31,15 +31,14 @@ TIVIBU_CHANNELS = {
     "TİVİ.6.tr": "TİVİ6"
 }
 
-# --- DETAY ÇEKİLECEK HEDEF TÜRK KANALLARI ---
-# Bu listedeki kanallar için Türksat sitesinden özel açıklama kazınacak.
+# --- HEDEF TÜRK KANALLARI (Sitede Görünen Sade Halleri) ---
+# Küçük harf yaparak kontrolü garantiye alıyoruz.
 DETAIL_CHANNELS = [
-    "TRT 1", "ATV", "NOW", "SHOW TV", "KANAL D", "STAR", "TV8", "TV 8,5", 
-    "BEYAZ TV", "KANAL 7", "CNBC-E", "TRT SPOR", "360 TV", "TLC", "DMAX", 
-    "TV2", "TRT 2", "A2", "TRT BELGESEL"
+    "trt 1", "atv", "now", "show", "kanal d", "star", "tv8", "tv 8,5", 
+    "beyaz tv", "kanal 7", "cnbc-e", "trt spor", "360", "tlc", "dmax", 
+    "teve2", "trt 2", "a2", "trt belgesel", "tgrt haber"
 ]
 
-# Açıklamaları hafızada tutmak için (Aynı program tekrar ederse tekrar internete gitmesin)
 description_cache = {}
 
 def get_program_detail(prog_id):
@@ -47,40 +46,32 @@ def get_program_detail(prog_id):
     if prog_id in description_cache: return description_cache[prog_id]
     
     detail_url = f"https://www.turksatkablo.com.tr/yayin-akisi-detay.aspx?id={prog_id}"
-    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
-    
-    print(f"🔍 Detay isteniyor ID: {prog_id} -> URL: {detail_url}") # TEST SATIRI
+    # Gerçek bir tarayıcı gibi davranması için headers güncellendi
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        'Referer': 'https://www.turksatkablo.com.tr/yayin-akisi.aspx'
+    }
     
     try:
         resp = requests.get(detail_url, headers=headers, verify=False, timeout=5)
         if resp.status_code == 200:
-            # HTML içeriği boş mu geliyor kontrol edelim
             if "program-detay" in resp.text:
                 match = re.search(r'<div class="program-detay">(.*?)</div>', resp.text, re.DOTALL)
                 if match:
                     desc = match.group(1).strip()
-                    desc = re.sub('<[^<]+?>', '', desc)
-                    print(f"✅ Detay Alındı: {desc[:50]}...") # TEST SATIRI
+                    desc = re.sub('<[^<]+?>', '', desc) # HTML etiketlerini temizle
+                    print(f"   ↳ 📝 Detay Alındı: {desc[:40]}...") 
                     description_cache[prog_id] = desc
                     return desc
             else:
-                print(f"❌ Sayfa yüklendi ama 'program-detay' divi bulunamadı! ID: {prog_id}") # TEST SATIRI
-        else:
-            print(f"❌ HTTP Hatası: {resp.status_code} ID: {prog_id}") # TEST SATIRI
+                print(f"   ↳ ❌ Div bulunamadı ID: {prog_id}")
     except Exception as e:
-        print(f"❌ Bağlantı Hatası: {e} ID: {prog_id}") # TEST SATIRI
+        print(f"   ↳ ❌ Bağlantı Hatası: {e}")
     return None
-
-# --- HEDEF TÜRK KANALLARI (Daha Garanti Liste) ---
-DETAIL_CHANNELS = [
-    "TRT 1", "ATV", "NOW", "SHOW TV", "KANAL D", "STAR", "TV8", "TV 8,5", 
-    "BEYAZ TV", "KANAL 7", "CNBC-E", "TRT SPOR", "360 TV", "TLC", "DMAX", 
-    "TV2", "TRT 2", "A2", "TRT BELGESEL", "TGRT HABER"
-]
 
 def fetch_turksat_weekly(master_root):
     tr_now = datetime.utcnow() + timedelta(hours=3)
-    headers = {'User-Agent': 'Mozilla/5.0'}
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
     print("🇹🇷 Türksat Haftalık Zenginleştirilmiş Tarama Başlatıldı...")
     
     for i in range(7):
@@ -95,17 +86,19 @@ def fetch_turksat_weekly(master_root):
                 if 'k' in data:
                     print(f"✅ {target_date.strftime('%d.%m.%Y')} işleniyor...")
                     for channel in data.get('k', []):
-                        chan_name = channel.get('n', 'Unknown').strip()
-                        # ID oluştururken boşlukları noktaya çeviriyoruz (XML standardı için)
-                        chan_id = chan_name.replace(" ", ".")
+                        chan_name_orig = channel.get('n', 'Unknown').strip()
+                        chan_name_lower = chan_name_orig.lower()
+                        chan_id = chan_name_orig.replace(" ", ".")
                         
                         if i == 0:
                             c_elem = ET.SubElement(master_root, "channel", id=chan_id)
-                            ET.SubElement(c_elem, "display-name").text = chan_name
+                            ET.SubElement(c_elem, "display-name").text = chan_name_orig
+
+                        # ESNEK KONTROL: Listemizdeki kelime kanal adının içinde geçiyor mu?
+                        is_target = any(target in chan_name_lower for target in DETAIL_CHANNELS)
 
                         date_prefix = target_date.strftime('%Y%m%d')
                         for prog in channel.get('p', []):
-                            # ... (Zaman hesaplamaları aynı kalıyor) ...
                             start_time = prog.get('c', '').replace(":", "")
                             stop_time = prog.get('d', '').replace(":", "")
                             current_stop_prefix = date_prefix
@@ -119,14 +112,12 @@ def fetch_turksat_weekly(master_root):
                             p_elem = ET.SubElement(master_root, "programme", start=start, stop=stop, channel=chan_id)
                             ET.SubElement(p_elem, "title", lang="tr").text = prog.get('b', 'Yayın Akışı')
                             
-                            # --- KRİTİK DÜZELTME BURADA ---
-                            # Hem boşluklu hem noktalı halini kontrol et
-                            if chan_name in DETAIL_CHANNELS or chan_id in DETAIL_CHANNELS:
+                            # Eğer hedef kanalsa detayı çekmeye çalış
+                            if is_target:
                                 prog_id = prog.get('i')
                                 if prog_id:
                                     description = get_program_detail(prog_id)
                                     if description:
-                                        # EPG verisinde <desc> ekle
                                         ET.SubElement(p_elem, "desc", lang="tr").text = description
         except Exception as e:
             print(f"⚠️ Türksat hatası ({target_date.strftime('%d.%m')}): {e}")
