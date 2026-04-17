@@ -2,8 +2,11 @@ name: Update Master EPG
 
 on:
   schedule:
-    - cron: '0 3 * * *' # Her gece TR saatiyle 06:00 (UTC 03:00)
-  workflow_dispatch: # Manuel çalıştırmak için buton ekler
+    - cron: '0 3 * * *' # Her gece TR saatiyle 06:00
+  workflow_dispatch: # Manuel çalıştırma butonu
+
+permissions:
+  contents: write # Dosyayı commit edip push yapabilmek için gerekli
 
 jobs:
   build:
@@ -19,7 +22,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install requests
+          pip install requests beautifulsoup4 urllib3 lxml
 
       - name: Run Master Scraper
         run: python scripts/master_scraper.py
@@ -29,5 +32,5 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add epg/*
-          git commit -m "Master EPG updated" || exit 0
+          git commit -m "Master EPG updated: $(date +'%Y-%m-%d %H:%M')" || exit 0
           git push
