@@ -9,7 +9,6 @@ from bs4 import BeautifulSoup
 import re
 import html as html_lib
 
-
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # --- AYARLAR ---
@@ -43,18 +42,13 @@ DETAIL_CHANNELS = [
 description_cache = {}
 
 def get_program_detail(prog_id, target_date, channel_id, expected_channel_name):
-    """
-    Türksat Detay Pop-up'ından (HTML) açıklamayı çeker.
-    """
     if not prog_id or not channel_id:
         return None
     
-    # Tarih parametrelerini ayıkla
     d = target_date.strftime("%d").lstrip('0')
     m = target_date.strftime("%m").lstrip('0')
     y = target_date.strftime("%Y")
     
-    # Senin tarayıcıda yakaladığın o 5 parametreli URL yapısı
     detail_url = f"https://www.turksatkablo.com.tr/yayin-akisi-program-detay.aspx?d={d}&m={m}&y={y}&kID={channel_id}&eID={prog_id}"
     
     headers = {
@@ -63,42 +57,25 @@ def get_program_detail(prog_id, target_date, channel_id, expected_channel_name):
     }
     
     try:
-        # SSL sertifika hatası almamak için verify=False (Türksat bazen sorun çıkarıyor)
         resp = requests.get(detail_url, headers=headers, verify=False, timeout=10)
         
         if resp.status_code == 200:
             raw_html = resp.text
-            
-            # 1. Adım: Kanal İsmi Doğrulaması (Kırmızı okla gösterdiğin yer)
-            # HTML içindeki ilk <h2> etiketini yakalar
             chan_match = re.search(r'<h2>(.*?)</h2>', raw_html)
             if chan_match:
                 found_channel = chan_match.group(1).strip().lower()
                 expected_clean = expected_channel_name.lower().replace(" hd", "").strip()
                 
-                # Eğer çekilen sayfadaki kanal ismi bizimkiyle örtüşüyorsa (örn: TV 8 = TV 8)
                 if expected_clean in found_channel or found_channel in expected_clean:
-                    
-                    # 2. Adım: Program Açıklamasını (<p> etiketi) Çek
                     desc_match = re.search(r'<p>(.*?)</p>', raw_html, re.DOTALL)
                     if desc_match:
                         clean_desc = desc_match.group(1).strip()
-                        
-                        # HTML etiketlerini temizle (örn: <br/> varsa gitsin)
                         clean_desc = re.sub('<[^<]+?>', '', clean_desc)
-                        
-                        # HTML entity'lerini düzelt (örn: &#252; -> ü)
                         clean_desc = html_lib.unescape(clean_desc)
                         
-                        # Eğer geçerli bir açıklama varsa log bas ve döndür
                         if len(clean_desc) > 5:
                             print(f"      ↳ 📝 {expected_channel_name} için detay başarıyla alındı.")
                             return clean_desc
-            else:
-                # Sayfa yüklendi ama h2 bulunamadıysa loglayalım (debug için)
-                # print(f"      ⚠️ {expected_channel_name} için sayfa yapısı farklı döndü.")
-                pass
-
     except Exception as e:
         print(f"      ⚠️ Bağlantı hatası ({expected_channel_name}): {e}")
         
@@ -116,10 +93,12 @@ def fetch_idman_tv(master_root):
         if r.status_code == 200:
             soup = BeautifulSoup(r.content, 'html.parser')
             
+            # 1. Kanal tanımı HER ZAMAN programme'lardan önce eklenir
             c_elem = ET.SubElement(master_root, "channel", id=chan_id)
             ET.SubElement(c_elem, "display-name").text = "İdman TV"
 
             day_cards = soup.find_all('div', class_='day-card')
+            programmes_buffer = [] # Programları önce burada topluyoruz
 
             for card in day_cards:
                 title_text = card.find('h3', class_='day-title').get_text(strip=True)
@@ -141,30 +120,36 @@ def fetch_idman_tv(master_root):
                         time_str = match.group(1).replace(":", "")
                         title_val = match.group(2)
                         
-                        start_time = formatted_date.strftime('%Y%m%d') + time_str + "00 +0300"
+                        # BOŞLUK KALDIRILDI: "00+0300" (XMLTV Standardı)
+                        start_raw = formatted_date.strftime('%Y%m%d') + time_str + "00+0300"
                         
-                        # Bitiş saati mantığı
                         if i + 1 < len(lines):
                             next_match = re.match(r'^(\d{2}:\d{2})', lines[i+1])
                             if next_match:
                                 next_time_str = next_match.group(1).replace(":", "")
-                                
-                                # Eğer sonraki saat mevcut saatten küçükse gün atla (Örn: 22:30 -> 00:30)
                                 if int(next_time_str) < int(time_str):
                                     stop_day = formatted_date + timedelta(days=1)
-                                    stop_time = stop_day.strftime('%Y%m%d') + next_time_str + "00 +0300"
+                                    stop_raw = stop_day.strftime('%Y%m%d') + next_time_str + "00+0300"
                                 else:
-                                    stop_time = formatted_date.strftime('%Y%m%d') + next_time_str + "00 +0300"
+                                    stop_raw = formatted_date.strftime('%Y%m%d') + next_time_str + "00+0300"
                             else:
-                                stop_time = formatted_date.strftime('%Y%m%d') + "235900 +0300"
+                                stop_raw = formatted_date.strftime('%Y%m%d') + "235900+0300"
                         else:
-                            stop_time = formatted_date.strftime('%Y%m%d') + "235900 +0300"
+                            stop_raw = formatted_date.strftime('%Y%m%d') + "235900+0300"
 
-                        p_elem = ET.SubElement(master_root, "programme", 
-                                              start=start_time, 
-                                              stop=stop_time, 
-                                              channel=chan_id)
-                        ET.SubElement(p_elem, "title", lang="az").text = title_val
+                        # Hemen XML'e eklemek yerine listeye alıyoruz
+                        programmes_buffer.append((start_raw, stop_raw, title_val))
+            
+            # 2. KRONOLOJİK SIRALAMA (En kritik düzeltme)
+            programmes_buffer.sort(key=lambda x: x[0])
+
+            # 3. Sıralı veriyi XML'e yazıyoruz
+            for start_t, stop_t, title_val in programmes_buffer:
+                p_elem = ET.SubElement(master_root, "programme", 
+                                      start=start_t, 
+                                      stop=stop_t, 
+                                      channel=chan_id)
+                ET.SubElement(p_elem, "title", lang="az").text = title_val
             
             print("✅ İdman TV saat hataları düzeltilerek eklendi.")
     except Exception as e:
@@ -209,7 +194,6 @@ def fetch_turksat_weekly(master_root):
                             date_prefix = target_date.strftime('%Y%m%d')
                             progs = channel.get('p', [])
                             
-                            # EĞER PROGRAM LİSTESİ BOŞSA LOG BASALIM
                             if not progs and i == 0:
                                 print(f"      ⚠️ Uyarı: {chan_name_orig} için program listesi (p) boş!")
 
@@ -222,22 +206,19 @@ def fetch_turksat_weekly(master_root):
                                     next_day = target_date + timedelta(days=1)
                                     current_stop_prefix = next_day.strftime('%Y%m%d')
 
-                                start = date_prefix + start_time + "00 +0300"
-                                stop = current_stop_prefix + stop_time + "00 +0300"
+                                # BOŞLUK KALDIRILDI
+                                start = date_prefix + start_time + "00+0300"
+                                stop = current_stop_prefix + stop_time + "00+0300"
                                 
                                 p_elem = ET.SubElement(master_root, "programme", start=start, stop=stop, channel=chan_id)
                                 title = prog.get('b', 'Yayın Akışı')
                                 ET.SubElement(p_elem, "title", lang="tr").text = title
                                 
-                                # PROGRAM DETAY SORGUSU
                                 prog_eID = prog.get('i') 
                                 if prog_eID and chan_kID:
                                     description = get_program_detail(prog_eID, target_date, chan_kID, chan_name_orig)
                                     if description:
                                         ET.SubElement(p_elem, "desc", lang="tr").text = description
-                                # EĞER ID VAR AMA DETAY ÇIKMIYORSA LOG BASALIM (i=0 ve ilk 3 program için)
-                                elif i == 0:
-                                     pass # Log kirliliği olmasın diye sadece ID kontrolü yapıyoruz
         except Exception as e:
             print(f"⚠️ Türksat hatası ({target_date.strftime('%d.%m')}): {e}")
 
