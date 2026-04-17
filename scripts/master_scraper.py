@@ -109,68 +109,66 @@ def fetch_idman_tv(master_root):
     headers = {'User-Agent': 'Mozilla/5.0'}
     chan_id = "Idman.TV.az"
     
-    print("🇦🇿 İdman TV Metin Kazıma Başlatıldı...")
+    print("🇦🇿 İdman TV Kazıma ve Düzeltme Başlatıldı...")
     
     try:
         r = requests.get(url, headers=headers, verify=False, timeout=15)
         if r.status_code == 200:
             soup = BeautifulSoup(r.content, 'html.parser')
             
-            # Kanal tanımı
             c_elem = ET.SubElement(master_root, "channel", id=chan_id)
             ET.SubElement(c_elem, "display-name").text = "İdman TV"
 
-            # HTML'deki 'day-card' yapılarını bul
             day_cards = soup.find_all('div', class_='day-card')
 
             for card in day_cards:
-                # 1. Tarihi Ayıkla (Örn: "Bazar ertəsi / 13.04.2026.")
                 title_text = card.find('h3', class_='day-title').get_text(strip=True)
                 date_match = re.search(r'(\d{2}\.\d{2}\.\d{4})', title_text)
                 if not date_match: continue
                 
-                formatted_date = datetime.strptime(date_match.group(1), '%d.%m.%Y').strftime('%Y%m%d')
+                current_date_str = date_match.group(1)
+                formatted_date = datetime.strptime(current_date_str, '%d.%m.%Y')
 
-                # 2. Metin Bloğunu İşle
-                # Veriler <div class="day-notes"><p> içinde ham metin olarak duruyor
                 notes_div = card.find('div', class_='day-notes')
                 if not notes_div or not notes_div.p: continue
                 
-                # <br> etiketlerini yeni satıra çevirip metni al
                 raw_text = notes_div.p.get_text('\n')
                 lines = [line.strip() for line in raw_text.split('\n') if line.strip()]
 
                 for i, line in enumerate(lines):
-                    # Satır başındaki saati ayıkla (Örn: "07:00 Program Adı")
-                    # Regex: Satır başındaki iki rakam, iki nokta, iki rakam
                     match = re.match(r'^(\d{2}:\d{2})\s+(.*)', line)
                     if match:
                         time_str = match.group(1).replace(":", "")
                         title_val = match.group(2)
                         
-                        start_time = f"{formatted_date}{time_str}00 +0400"
+                        start_time = formatted_date.strftime('%Y%m%d') + time_str + "00 +0300"
                         
-                        # Bitiş saati için bir sonraki satırı kontrol et
+                        # Bitiş saati mantığı
                         if i + 1 < len(lines):
                             next_match = re.match(r'^(\d{2}:\d{2})', lines[i+1])
                             if next_match:
-                                next_time = next_match.group(1).replace(":", "")
-                                stop_time = f"{formatted_date}{next_time}00 +0400"
+                                next_time_str = next_match.group(1).replace(":", "")
+                                
+                                # Eğer sonraki saat mevcut saatten küçükse gün atla (Örn: 22:30 -> 00:30)
+                                if int(next_time_str) < int(time_str):
+                                    stop_day = formatted_date + timedelta(days=1)
+                                    stop_time = stop_day.strftime('%Y%m%d') + next_time_str + "00 +0300"
+                                else:
+                                    stop_time = formatted_date.strftime('%Y%m%d') + next_time_str + "00 +0300"
                             else:
-                                stop_time = f"{formatted_date}235900 +0400"
+                                stop_time = formatted_date.strftime('%Y%m%d') + "235900 +0300"
                         else:
-                            stop_time = f"{formatted_date}235900 +0400"
+                            stop_time = formatted_date.strftime('%Y%m%d') + "235900 +0300"
 
-                        # XML'e ekle
                         p_elem = ET.SubElement(master_root, "programme", 
                                               start=start_time, 
                                               stop=stop_time, 
                                               channel=chan_id)
                         ET.SubElement(p_elem, "title", lang="az").text = title_val
             
-            print("✅ İdman TV metin bloğundan başarıyla ayıklandı.")
+            print("✅ İdman TV saat hataları düzeltilerek eklendi.")
     except Exception as e:
-        print(f"⚠️ İdman TV kazıma hatası: {e}")
+        print(f"⚠️ İdman TV hatası: {e}")
 
 def fetch_turksat_weekly(master_root):
     tr_now = datetime.utcnow() + timedelta(hours=3)
