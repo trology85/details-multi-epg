@@ -5,6 +5,7 @@ import io
 import os
 from datetime import datetime, timedelta
 import urllib3
+from bs4 import BeautifulSoup
 import re
 import html as html_lib
 
@@ -102,6 +103,74 @@ def get_program_detail(prog_id, target_date, channel_id, expected_channel_name):
         print(f"      ⚠️ Bağlantı hatası ({expected_channel_name}): {e}")
         
     return None
+
+def fetch_idman_tv(master_root):
+    url = "https://idmantv.az/az/program"
+    headers = {'User-Agent': 'Mozilla/5.0'}
+    chan_id = "Idman.TV.az"
+    
+    print("🇦🇿 İdman TV Metin Kazıma Başlatıldı...")
+    
+    try:
+        r = requests.get(url, headers=headers, verify=False, timeout=15)
+        if r.status_code == 200:
+            soup = BeautifulSoup(r.content, 'html.parser')
+            
+            # Kanal tanımı
+            c_elem = ET.SubElement(master_root, "channel", id=chan_id)
+            ET.SubElement(c_elem, "display-name").text = "İdman TV"
+
+            # HTML'deki 'day-card' yapılarını bul
+            day_cards = soup.find_all('div', class_='day-card')
+
+            for card in day_cards:
+                # 1. Tarihi Ayıkla (Örn: "Bazar ertəsi / 13.04.2026.")
+                title_text = card.find('h3', class_='day-title').get_text(strip=True)
+                date_match = re.search(r'(\d{2}\.\d{2}\.\d{4})', title_text)
+                if not date_match: continue
+                
+                formatted_date = datetime.strptime(date_match.group(1), '%d.%m.%Y').strftime('%Y%m%d')
+
+                # 2. Metin Bloğunu İşle
+                # Veriler <div class="day-notes"><p> içinde ham metin olarak duruyor
+                notes_div = card.find('div', class_='day-notes')
+                if not notes_div or not notes_div.p: continue
+                
+                # <br> etiketlerini yeni satıra çevirip metni al
+                raw_text = notes_div.p.get_text('\n')
+                lines = [line.strip() for line in raw_text.split('\n') if line.strip()]
+
+                for i, line in enumerate(lines):
+                    # Satır başındaki saati ayıkla (Örn: "07:00 Program Adı")
+                    # Regex: Satır başındaki iki rakam, iki nokta, iki rakam
+                    match = re.match(r'^(\d{2}:\d{2})\s+(.*)', line)
+                    if match:
+                        time_str = match.group(1).replace(":", "")
+                        title_val = match.group(2)
+                        
+                        start_time = f"{formatted_date}{time_str}00 +0400"
+                        
+                        # Bitiş saati için bir sonraki satırı kontrol et
+                        if i + 1 < len(lines):
+                            next_match = re.match(r'^(\d{2}:\d{2})', lines[i+1])
+                            if next_match:
+                                next_time = next_match.group(1).replace(":", "")
+                                stop_time = f"{formatted_date}{next_time}00 +0400"
+                            else:
+                                stop_time = f"{formatted_date}235900 +0400"
+                        else:
+                            stop_time = f"{formatted_date}235900 +0400"
+
+                        # XML'e ekle
+                        p_elem = ET.SubElement(master_root, "programme", 
+                                              start=start_time, 
+                                              stop=stop_time, 
+                                              channel=chan_id)
+                        ET.SubElement(p_elem, "title", lang="az").text = title_val
+            
+            print("✅ İdman TV metin bloğundan başarıyla ayıklandı.")
+    except Exception as e:
+        print(f"⚠️ İdman TV kazıma hatası: {e}")
 
 def fetch_turksat_weekly(master_root):
     tr_now = datetime.utcnow() + timedelta(hours=3)
@@ -201,6 +270,7 @@ def fetch_tivibu_spor(master_root):
 def create_master():
     master_root = ET.Element("tv", {"generator-info-name": "Weekly Master Scraper"})
     fetch_turksat_weekly(master_root)
+    fetch_idman_tv(master_root)
 
     for country, url in SOURCES.items():
         print(f"🌍 {country} verisi işleniyor...")
