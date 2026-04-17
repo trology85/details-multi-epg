@@ -111,7 +111,10 @@ def fetch_idman_tv(master_root):
                 notes_div = card.find('div', class_='day-notes')
                 if not notes_div or not notes_div.p: continue
                 
-                raw_text = notes_div.p.get_text('\n')
+                # Tüm <br> etiketlerini newline ile değiştir
+                for br in notes_div.p.find_all('br'):
+                br.replace_with('\n')
+                raw_text = notes_div.p.get_text()
                 lines = [line.strip() for line in raw_text.split('\n') if line.strip()]
 
                 for i, line in enumerate(lines):
