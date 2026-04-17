@@ -84,7 +84,7 @@ def get_program_detail(prog_id, target_date, channel_id, expected_channel_name):
 def fetch_idman_tv(master_root):
     url = "https://idmantv.az/az/program"
     headers = {'User-Agent': 'Mozilla/5.0'}
-    chan_id = "Idman.TV.az"
+    chan_id = "Idman.TV"
     
     print("🇦🇿 İdman TV Kazıma ve Düzeltme Başlatıldı...")
     
