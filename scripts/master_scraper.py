@@ -113,7 +113,7 @@ def fetch_idman_tv(master_root):
                 
                 # Tüm <br> etiketlerini newline ile değiştir
                 for br in notes_div.p.find_all('br'):
-                br.replace_with('\n')
+                    br.replace_with('\n')
                 raw_text = notes_div.p.get_text()
                 lines = [line.strip() for line in raw_text.split('\n') if line.strip()]
 
