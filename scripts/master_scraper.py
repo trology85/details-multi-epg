@@ -84,21 +84,20 @@ def get_program_detail(prog_id, target_date, channel_id, expected_channel_name):
 def fetch_idman_tv(master_root):
     url = "https://idmantv.az/az/program"
     headers = {'User-Agent': 'Mozilla/5.0'}
-    chan_id = "Idman.TV"
+    chan_id = "Idman.TV"  # ID'yi güncelledik
     
-    print("🇦🇿 İdman TV Kazıma ve Düzeltme Başlatıldı...")
+    print("🇦 İdman TV Kazıma ve Parser Uyumlu Hale Getirme...")
     
     try:
         r = requests.get(url, headers=headers, verify=False, timeout=15)
         if r.status_code == 200:
             soup = BeautifulSoup(r.content, 'html.parser')
             
-            # 1. Kanal tanımı HER ZAMAN programme'lardan önce eklenir
             c_elem = ET.SubElement(master_root, "channel", id=chan_id)
             ET.SubElement(c_elem, "display-name").text = "İdman TV"
 
             day_cards = soup.find_all('div', class_='day-card')
-            programmes_buffer = [] # Programları önce burada topluyoruz
+            programmes_buffer = []
 
             for card in day_cards:
                 title_text = card.find('h3', class_='day-title').get_text(strip=True)
@@ -111,7 +110,7 @@ def fetch_idman_tv(master_root):
                 notes_div = card.find('div', class_='day-notes')
                 if not notes_div or not notes_div.p: continue
                 
-                # Tüm <br> etiketlerini newline ile değiştir
+                # <br> etiketlerini newline'a çevir
                 for br in notes_div.p.find_all('br'):
                     br.replace_with('\n')
                 raw_text = notes_div.p.get_text()
@@ -123,8 +122,8 @@ def fetch_idman_tv(master_root):
                         time_str = match.group(1).replace(":", "")
                         title_val = match.group(2)
                         
-                        # BOŞLUK KALDIRILDI: "00+0300" (XMLTV Standardı)
-                        start_raw = formatted_date.strftime('%Y%m%d') + time_str + "00+0300"
+                        # ✅ DÜZELTME 1: Timezone formatı +03:00 (iki nokta üst üste)
+                        start_raw = formatted_date.strftime('%Y%m%d') + time_str + "00+03:00"
                         
                         if i + 1 < len(lines):
                             next_match = re.match(r'^(\d{2}:\d{2})', lines[i+1])
@@ -132,29 +131,30 @@ def fetch_idman_tv(master_root):
                                 next_time_str = next_match.group(1).replace(":", "")
                                 if int(next_time_str) < int(time_str):
                                     stop_day = formatted_date + timedelta(days=1)
-                                    stop_raw = stop_day.strftime('%Y%m%d') + next_time_str + "00+0300"
+                                    stop_raw = stop_day.strftime('%Y%m%d') + next_time_str + "00+03:00"
                                 else:
-                                    stop_raw = formatted_date.strftime('%Y%m%d') + next_time_str + "00+0300"
+                                    stop_raw = formatted_date.strftime('%Y%m%d') + next_time_str + "00+03:00"
                             else:
-                                stop_raw = formatted_date.strftime('%Y%m%d') + "235900+0300"
+                                stop_raw = formatted_date.strftime('%Y%m%d') + "235900+03:00"
                         else:
-                            stop_raw = formatted_date.strftime('%Y%m%d') + "235900+0300"
+                            # ✅ DÜZELTME 2: 235900 yerine ertesi gün 00:00 (Overlap engelleme)
+                            next_day = formatted_date + timedelta(days=1)
+                            stop_raw = next_day.strftime('%Y%m%d') + "000000+03:00"
 
-                        # Hemen XML'e eklemek yerine listeye alıyoruz
                         programmes_buffer.append((start_raw, stop_raw, title_val))
             
-            # 2. KRONOLOJİK SIRALAMA (En kritik düzeltme)
+            # Kronolojik sıralama
             programmes_buffer.sort(key=lambda x: x[0])
 
-            # 3. Sıralı veriyi XML'e yazıyoruz
             for start_t, stop_t, title_val in programmes_buffer:
                 p_elem = ET.SubElement(master_root, "programme", 
                                       start=start_t, 
                                       stop=stop_t, 
                                       channel=chan_id)
-                ET.SubElement(p_elem, "title", lang="az").text = title_val
+                # ✅ DÜZELTME 3: lang="az" yerine lang="tr" (Parser uyumluluğu)
+                ET.SubElement(p_elem, "title", lang="tr").text = title_val
             
-            print("✅ İdman TV saat hataları düzeltilerek eklendi.")
+            print("✅ İdman TV parser uyumlu şekilde eklendi.")
     except Exception as e:
         print(f"⚠️ İdman TV hatası: {e}")
 
