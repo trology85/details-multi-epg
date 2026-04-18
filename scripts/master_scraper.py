@@ -117,18 +117,15 @@ def fetch_idman_tv(master_root):
 
         soup = BeautifulSoup(resp.text, "html.parser")
         day_cards = soup.find_all("div", class_="day-card")
-
         if not day_cards:
             print("⚠️ İdman TV day-card bulunamadı.")
             return
 
-        # Önce tüm yayınları gerçek datetime ile toplayalım
         parsed_items = []
 
         for card in day_cards:
             title_el = card.find("h3", class_="day-title")
             notes_el = card.find("div", class_="day-notes")
-
             if not title_el or not notes_el:
                 continue
 
@@ -163,36 +160,37 @@ def fetch_idman_tv(master_root):
 
                 total_minutes = hh * 60 + mm
 
-                # Saat geri sardıysa ertesi güne geç
+                # Saat geri sardıysa Azerbaycan tarafında ertesi güne geç
                 if prev_minutes is not None and total_minutes < prev_minutes:
                     current_day += timedelta(days=1)
 
-                start_dt = current_day.replace(hour=hh, minute=mm, second=0, microsecond=0)
-                parsed_items.append((start_dt, title))
+                # Önce Azerbaycan saatiyle oluştur
+                source_dt = current_day.replace(hour=hh, minute=mm, second=0, microsecond=0)
+
+                # Sonra Türkiye saatine çevir (-1 saat)
+                turkey_dt = source_dt - timedelta(hours=1)
+
+                parsed_items.append((turkey_dt, title))
                 prev_minutes = total_minutes
 
         if not parsed_items:
             print("⚠️ İdman TV için programme üretilemedi.")
             return
 
-        # Global kronolojik sırala
         parsed_items.sort(key=lambda x: x[0])
 
-        # Kanal kaydı
         c_elem = ET.SubElement(master_root, "channel", id=chan_id)
         ET.SubElement(c_elem, "display-name").text = "İdman TV"
         ET.SubElement(c_elem, "display-name").text = "Idman TV"
 
-        # Her programın stop'u bir sonrakinin start'ı olsun
         for i, (start_dt, title) in enumerate(parsed_items):
             if i + 1 < len(parsed_items):
                 stop_dt = parsed_items[i + 1][0]
             else:
-                # Son kayıt için makul fallback
                 stop_dt = start_dt + timedelta(hours=1)
 
-            start = start_dt.strftime("%Y%m%d%H%M%S") + " +0300"
-            stop = stop_dt.strftime("%Y%m%d%H%M%S") + " +0300"
+            start = start_dt.strftime("%Y%m%d%H%M%S") + "+0300"
+            stop = stop_dt.strftime("%Y%m%d%H%M%S") + "+0300"
 
             p_elem = ET.SubElement(
                 master_root,
