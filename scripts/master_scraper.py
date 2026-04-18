@@ -1,6 +1,8 @@
 import requests
 import gzip
 import xml.etree.ElementTree as ET
+import re
+from bs4 import BeautifulSoup
 import io
 import os
 from datetime import datetime, timedelta
@@ -99,12 +101,115 @@ def fetch_tivibu_spor(master_root):
         print("✅ Tivibu ve TİVİ6 başarıyla eklendi.")
     except Exception as e:
         print(f"⚠️ Tivibu/TİVİ6 hatası: {e}")
+        
+def fetch_idman_tv(master_root):
+    url = "https://idmantv.az/az/program"
+    headers = {
+        "User-Agent": "Mozilla/5.0"
+    }
+
+    chan_id = "Idman.TV"
+
+    print("🇦 İdman TV verisi çekiliyor...")
+
+    try:
+        resp = requests.get(url, headers=headers, verify=False, timeout=20)
+        if resp.status_code != 200:
+            print(f"⚠️ İdman TV HTTP hatası: {resp.status_code}")
+            return
+
+        soup = BeautifulSoup(resp.text, "html.parser")
+
+        # Kanal kaydı
+        c_elem = ET.SubElement(master_root, "channel", id=chan_id)
+        ET.SubElement(c_elem, "display-name").text = "İdman TV"
+        ET.SubElement(c_elem, "display-name").text = "Idman TV"
+
+        day_cards = soup.find_all("div", class_="day-card")
+        if not day_cards:
+            print("⚠️ İdman TV day-card bulunamadı.")
+            return
+
+        programmes_buffer = []
+
+        for card in day_cards:
+            title_el = card.find("h3", class_="day-title")
+            notes_el = card.find("div", class_="day-notes")
+
+            if not title_el or not notes_el:
+                continue
+
+            title_text = title_el.get_text(" ", strip=True)
+            date_match = re.search(r"(\d{2}\.\d{2}\.\d{4})", title_text)
+            if not date_match:
+                continue
+
+            current_date = datetime.strptime(date_match.group(1), "%d.%m.%Y")
+
+            p_el = notes_el.find("p")
+            if not p_el:
+                continue
+
+            for br in p_el.find_all("br"):
+                br.replace_with("\n")
+
+            raw_text = p_el.get_text("\n", strip=True)
+            lines = [line.strip() for line in raw_text.split("\n") if line.strip()]
+
+            day_items = []
+            for line in lines:
+                m = re.match(r"^(\d{2}:\d{2})\s+(.*)$", line)
+                if not m:
+                    continue
+                hhmm = m.group(1)
+                title = m.group(2).strip()
+                day_items.append((hhmm, title))
+
+            for idx, (hhmm, title) in enumerate(day_items):
+                start_time = hhmm.replace(":", "")
+
+                if idx + 1 < len(day_items):
+                    next_hhmm = day_items[idx + 1][0].replace(":", "")
+                    stop_prefix_date = current_date
+
+                    if int(next_hhmm) < int(start_time):
+                        stop_prefix_date = current_date + timedelta(days=1)
+
+                    stop_time = next_hhmm
+                else:
+                    # Son yayın için ertesi gün 00:00'a kadar kapat
+                    stop_prefix_date = current_date + timedelta(days=1)
+                    stop_time = "0000"
+
+                start = current_date.strftime("%Y%m%d") + start_time + "00 +0300"
+                stop = stop_prefix_date.strftime("%Y%m%d") + stop_time + "00 +0300"
+
+                programmes_buffer.append((start, stop, title))
+
+        # Kronolojik sıraya al
+        programmes_buffer.sort(key=lambda x: x[0])
+
+        for start, stop, title in programmes_buffer:
+            p_elem = ET.SubElement(
+                master_root,
+                "programme",
+                start=start,
+                stop=stop,
+                channel=chan_id
+            )
+            ET.SubElement(p_elem, "title", lang="tr").text = title
+
+        print("✅ İdman TV başarıyla eklendi.")
+
+    except Exception as e:
+        print(f"⚠️ İdman TV hatası: {e}")
 
 def create_master():
     master_root = ET.Element("tv", {"generator-info-name": "Weekly Master Scraper"})
 
     # 1. Türksat
     fetch_turksat_weekly(master_root)
+    fetch_idman_tv(master_root)
 
     # 2. Yabancılar
     for country, url in SOURCES.items():
