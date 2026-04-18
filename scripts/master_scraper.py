@@ -117,6 +117,7 @@ def fetch_idman_tv(master_root):
 
         soup = BeautifulSoup(resp.text, "html.parser")
         day_cards = soup.find_all("div", class_="day-card")
+
         if not day_cards:
             print("⚠️ İdman TV day-card bulunamadı.")
             return
@@ -126,6 +127,7 @@ def fetch_idman_tv(master_root):
         for card in day_cards:
             title_el = card.find("h3", class_="day-title")
             notes_el = card.find("div", class_="day-notes")
+
             if not title_el or not notes_el:
                 continue
 
@@ -160,14 +162,14 @@ def fetch_idman_tv(master_root):
 
                 total_minutes = hh * 60 + mm
 
-                # Saat geri sardıysa Azerbaycan tarafında ertesi güne geç
+                # Saat geri sardıysa ertesi güne geç
                 if prev_minutes is not None and total_minutes < prev_minutes:
                     current_day += timedelta(days=1)
 
                 # Önce Azerbaycan saatiyle oluştur
                 source_dt = current_day.replace(hour=hh, minute=mm, second=0, microsecond=0)
 
-                # Sonra Türkiye saatine çevir (-1 saat)
+                # Türkiye saati için 1 saat geri al
                 turkey_dt = source_dt - timedelta(hours=1)
 
                 parsed_items.append((turkey_dt, title))
