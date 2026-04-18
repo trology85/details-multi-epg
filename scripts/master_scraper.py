@@ -104,10 +104,7 @@ def fetch_tivibu_spor(master_root):
         
 def fetch_idman_tv(master_root):
     url = "https://idmantv.az/az/program"
-    headers = {
-        "User-Agent": "Mozilla/5.0"
-    }
-
+    headers = {"User-Agent": "Mozilla/5.0"}
     chan_id = "Idman.TV"
 
     print("🇦 İdman TV verisi çekiliyor...")
@@ -119,18 +116,14 @@ def fetch_idman_tv(master_root):
             return
 
         soup = BeautifulSoup(resp.text, "html.parser")
-
-        # Kanal kaydı
-        c_elem = ET.SubElement(master_root, "channel", id=chan_id)
-        ET.SubElement(c_elem, "display-name").text = "İdman TV"
-        ET.SubElement(c_elem, "display-name").text = "Idman TV"
-
         day_cards = soup.find_all("div", class_="day-card")
+
         if not day_cards:
             print("⚠️ İdman TV day-card bulunamadı.")
             return
 
-        programmes_buffer = []
+        # Önce tüm yayınları gerçek datetime ile toplayalım
+        parsed_items = []
 
         for card in day_cards:
             title_el = card.find("h3", class_="day-title")
@@ -144,7 +137,7 @@ def fetch_idman_tv(master_root):
             if not date_match:
                 continue
 
-            current_date = datetime.strptime(date_match.group(1), "%d.%m.%Y")
+            base_date = datetime.strptime(date_match.group(1), "%d.%m.%Y")
 
             p_el = notes_el.find("p")
             if not p_el:
@@ -156,40 +149,51 @@ def fetch_idman_tv(master_root):
             raw_text = p_el.get_text("\n", strip=True)
             lines = [line.strip() for line in raw_text.split("\n") if line.strip()]
 
-            day_items = []
+            current_day = base_date
+            prev_minutes = None
+
             for line in lines:
-                m = re.match(r"^(\d{2}:\d{2})\s+(.*)$", line)
+                m = re.match(r"^(\d{2}):(\d{2})\s+(.+)$", line)
                 if not m:
                     continue
-                hhmm = m.group(1)
-                title = m.group(2).strip()
-                day_items.append((hhmm, title))
 
-            for idx, (hhmm, title) in enumerate(day_items):
-                start_time = hhmm.replace(":", "")
+                hh = int(m.group(1))
+                mm = int(m.group(2))
+                title = m.group(3).strip()
 
-                if idx + 1 < len(day_items):
-                    next_hhmm = day_items[idx + 1][0].replace(":", "")
-                    stop_prefix_date = current_date
+                total_minutes = hh * 60 + mm
 
-                    if int(next_hhmm) < int(start_time):
-                        stop_prefix_date = current_date + timedelta(days=1)
+                # Saat geri sardıysa ertesi güne geç
+                if prev_minutes is not None and total_minutes < prev_minutes:
+                    current_day += timedelta(days=1)
 
-                    stop_time = next_hhmm
-                else:
-                    # Son yayın için ertesi gün 00:00'a kadar kapat
-                    stop_prefix_date = current_date + timedelta(days=1)
-                    stop_time = "0000"
+                start_dt = current_day.replace(hour=hh, minute=mm, second=0, microsecond=0)
+                parsed_items.append((start_dt, title))
+                prev_minutes = total_minutes
 
-                start = current_date.strftime("%Y%m%d") + start_time + "00 +0300"
-                stop = stop_prefix_date.strftime("%Y%m%d") + stop_time + "00 +0300"
+        if not parsed_items:
+            print("⚠️ İdman TV için programme üretilemedi.")
+            return
 
-                programmes_buffer.append((start, stop, title))
+        # Global kronolojik sırala
+        parsed_items.sort(key=lambda x: x[0])
 
-        # Kronolojik sıraya al
-        programmes_buffer.sort(key=lambda x: x[0])
+        # Kanal kaydı
+        c_elem = ET.SubElement(master_root, "channel", id=chan_id)
+        ET.SubElement(c_elem, "display-name").text = "İdman TV"
+        ET.SubElement(c_elem, "display-name").text = "Idman TV"
 
-        for start, stop, title in programmes_buffer:
+        # Her programın stop'u bir sonrakinin start'ı olsun
+        for i, (start_dt, title) in enumerate(parsed_items):
+            if i + 1 < len(parsed_items):
+                stop_dt = parsed_items[i + 1][0]
+            else:
+                # Son kayıt için makul fallback
+                stop_dt = start_dt + timedelta(hours=1)
+
+            start = start_dt.strftime("%Y%m%d%H%M%S") + " +0300"
+            stop = stop_dt.strftime("%Y%m%d%H%M%S") + " +0300"
+
             p_elem = ET.SubElement(
                 master_root,
                 "programme",
@@ -199,7 +203,7 @@ def fetch_idman_tv(master_root):
             )
             ET.SubElement(p_elem, "title", lang="tr").text = title
 
-        print("✅ İdman TV başarıyla eklendi.")
+        print(f"✅ İdman TV başarıyla eklendi. ({len(parsed_items)} programme)")
 
     except Exception as e:
         print(f"⚠️ İdman TV hatası: {e}")
