@@ -8,6 +8,8 @@ import os
 from datetime import datetime, timedelta
 import urllib3
 import html as html_lib
+from urllib.parse import urljoin, urlparse, parse_qs
+from playwright.sync_api import sync_playwright
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -77,6 +79,94 @@ CHANNEL_ALIASES = {
 }
 
 description_cache = {}
+
+BASE_URL = "https://www.turksatkablo.com.tr/"
+
+DAY_CODE_MAP = {
+    0: "b",
+    1: "y",
+    2: "s",
+}
+
+def normalize_program_title(title: str) -> str:
+    text = html_lib.unescape(title or "")
+    text = re.sub(r"\s+", " ", text).strip().lower()
+    return text
+
+def get_turksat_detail_links_for_day(day_index: int):
+    if day_index not in DAY_CODE_MAP:
+        return {}
+
+    page_url = f"{BASE_URL}yayin-akisi.aspx?i={DAY_CODE_MAP[day_index]}"
+    raw_pairs = []
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
+        page.goto(page_url, wait_until="domcontentloaded", timeout=30000)
+        page.wait_for_load_state("networkidle")
+        page.wait_for_selector("a.ymodal", timeout=15000)
+
+        links = page.locator("a.ymodal")
+        count = links.count()
+
+        for idx in range(count):
+            el = links.nth(idx)
+            title = normalize_program_title(el.inner_text())
+            href = el.get_attribute("data-href") or ""
+            if not href or not title:
+                continue
+
+            full_url = urljoin(BASE_URL, href)
+            qs = parse_qs(urlparse(full_url).query)
+            kid = (qs.get("kID") or [""])[0]
+            eid = (qs.get("eID") or [""])[0]
+
+            if kid and eid:
+                raw_pairs.append((kid, title, full_url))
+
+        browser.close()
+
+    # aynı kanal + aynı başlık birden fazla olabilir
+    result = {}
+    for kid, title, full_url in raw_pairs:
+        key = (str(kid), title)
+        result.setdefault(key, []).append(full_url)
+
+    return result
+
+def get_program_detail_from_url(detail_url: str, channel_name: str):
+    headers = {
+        "User-Agent": "Mozilla/5.0",
+        "Referer": "https://www.turksatkablo.com.tr/yayin-akisi.aspx",
+    }
+
+    try:
+        resp = requests.get(detail_url, headers=headers, verify=False, timeout=10)
+        if resp.status_code != 200:
+            return None
+
+        soup = BeautifulSoup(resp.text, "html.parser")
+        detail = soup.select_one("div.program-detail")
+        if not detail:
+            return None
+
+        p = detail.find("p")
+        if not p:
+            return None
+
+        clean_desc = p.get_text(" ", strip=True)
+        clean_desc = html_lib.unescape(clean_desc)
+        clean_desc = re.sub(r"\s+", " ", clean_desc).strip()
+
+        if len(clean_desc) > 5:
+            print(f"      ↳ 📝 {channel_name} için detay başarıyla alındı.")
+            return clean_desc
+
+    except Exception as e:
+        print(f"      ⚠️ Detay bağlantı hatası ({channel_name}): {e}")
+
+    return None
 
 def normalize_channel_name(name: str) -> str:
     text = html_lib.unescape(name or "").lower()
@@ -168,6 +258,9 @@ def fetch_turksat_weekly(master_root):
         day_str = target_date.strftime("%d").lstrip("0")
         url = f"https://www.turksatkablo.com.tr/userUpload/EPG/{day_str}.json"
 
+        # Açıklama linkleri: şu an ilk 3 gün için
+        rendered_detail_links = get_turksat_detail_links_for_day(i) if i in DAY_CODE_MAP else {}
+
         try:
             r = requests.get(url, headers=headers, verify=False, timeout=10)
             if r.status_code == 200:
@@ -217,23 +310,21 @@ def fetch_turksat_weekly(master_root):
                             ET.SubElement(p_elem, "title", lang="tr").text = title
 
                             if fetch_desc_for_this_channel and chan_kID:
-                                prog_eID = prog.get("i")
+                                norm_title = normalize_program_title(title)
+                                key = (str(chan_kID), norm_title)
 
                                 if i == 0:
                                     print(
                                         f"DETAY DEBUG: kanal={chan_name!r} "
                                         f"kID={chan_kID!r} "
-                                        f"eID={prog_eID!r} "
-                                        f"title={title!r}"
+                                        f"title={title!r} "
+                                        f"key={key!r} "
+                                        f"found={key in rendered_detail_links}"
                                     )
 
-                                if prog_eID:
-                                    description = get_program_detail(
-                                        prog_eID,
-                                        target_date,
-                                        chan_kID,
-                                        chan_name
-                                    )
+                                if key in rendered_detail_links and rendered_detail_links[key]:
+                                    detail_url = rendered_detail_links[key].pop(0)
+                                    description = get_program_detail_from_url(detail_url, chan_name)
                                     if description:
                                         ET.SubElement(p_elem, "desc", lang="tr").text = description
 
