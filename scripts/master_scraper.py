@@ -7,6 +7,7 @@ import io
 import os
 from datetime import datetime, timedelta
 import urllib3
+import html as html_lib
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -33,46 +34,177 @@ TIVIBU_CHANNELS = {
     "TİVİ.6.tr": "TİVİ6"
 }
 
+DESC_TARGET_CHANNELS = {
+    "trt 1",
+    "star",
+    "atv",
+    "show tv",
+    "kanal d",
+    "now tv",
+    "beyaz tv",
+    "tv 8",
+    "360 tv",
+    "tv 2",
+}
+
+CHANNEL_ALIASES = {
+    "trt1": "trt 1",
+    "trt 1": "trt 1",
+    "star": "star",
+    "atv": "atv",
+    "show": "show tv",
+    "show tv": "show tv",
+    "kanal d": "kanal d",
+    "now": "now tv",
+    "now tv": "now tv",
+    "beyaz": "beyaz tv",
+    "beyaz tv": "beyaz tv",
+    "tv8": "tv 8",
+    "tv 8": "tv 8",
+    "360": "360 tv",
+    "360 tv": "360 tv",
+    "tv2": "tv 2",
+    "tv 2": "tv 2",
+}
+
+description_cache = {}
+
+def normalize_channel_name(name: str) -> str:
+    text = html_lib.unescape(name or "").lower()
+    text = text.replace(".", " ").replace("-", " ")
+    text = re.sub(r"\s+", " ", text).strip()
+    return CHANNEL_ALIASES.get(text, text)
+
+def should_fetch_desc(channel_name: str) -> bool:
+    return normalize_channel_name(channel_name) in DESC_TARGET_CHANNELS
+
+def get_program_detail(prog_id, target_date, channel_id, expected_channel_name):
+    if not prog_id or not channel_id:
+        return None
+
+    cache_key = (str(prog_id), str(channel_id), target_date.strftime("%Y%m%d"))
+    if cache_key in description_cache:
+        return description_cache[cache_key]
+
+    d = target_date.strftime("%d").lstrip("0")
+    m = target_date.strftime("%m").lstrip("0")
+    y = target_date.strftime("%Y")
+
+    detail_url = (
+        f"https://www.turksatkablo.com.tr/"
+        f"yayin-akisi-program-detay.aspx?d={d}&m={m}&y={y}&kID={channel_id}&eID={prog_id}"
+    )
+
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+        "Referer": "https://www.turksatkablo.com.tr/yayin-akisi.aspx",
+    }
+
+    try:
+        resp = requests.get(detail_url, headers=headers, verify=False, timeout=10)
+        if resp.status_code != 200:
+            description_cache[cache_key] = None
+            return None
+
+        raw_html = resp.text
+
+        chan_match = re.search(r"<h2>(.*?)</h2>", raw_html, re.DOTALL | re.IGNORECASE)
+        if chan_match:
+            found_channel = normalize_channel_name(re.sub("<[^<]+?>", "", chan_match.group(1)))
+            expected_channel = normalize_channel_name(expected_channel_name)
+            if found_channel != expected_channel:
+                if found_channel not in expected_channel and expected_channel not in found_channel:
+                    description_cache[cache_key] = None
+                    return None
+
+        desc_match = re.search(r"<p>(.*?)</p>", raw_html, re.DOTALL | re.IGNORECASE)
+        if not desc_match:
+            description_cache[cache_key] = None
+            return None
+
+        clean_desc = desc_match.group(1).strip()
+        clean_desc = re.sub(r"<[^<]+?>", "", clean_desc)
+        clean_desc = html_lib.unescape(clean_desc)
+        clean_desc = re.sub(r"\s+", " ", clean_desc).strip()
+
+        if len(clean_desc) > 5:
+            print(f"      ↳ 📝 {expected_channel_name} için detay başarıyla alındı.")
+            description_cache[cache_key] = clean_desc
+            return clean_desc
+
+    except Exception as e:
+        print(f"      ⚠️ Bağlantı hatası ({expected_channel_name}): {e}")
+
+    description_cache[cache_key] = None
+    return None
+
 def fetch_turksat_weekly(master_root):
     tr_now = datetime.utcnow() + timedelta(hours=3)
-    headers = {'User-Agent': 'Mozilla/5.0'}
+    headers = {
+        "User-Agent": "Mozilla/5.0",
+        "Referer": "https://www.turksatkablo.com.tr/yayin-akisi.aspx",
+    }
+
     print("🇹🇷 Türksat Haftalık Tarama Başlatıldı...")
-    
+
     for i in range(7):
         target_date = tr_now + timedelta(days=i)
-        day_str = target_date.strftime("%d").lstrip('0')
+        day_str = target_date.strftime("%d").lstrip("0")
         url = f"https://www.turksatkablo.com.tr/userUpload/EPG/{day_str}.json"
-        
+
         try:
             r = requests.get(url, headers=headers, verify=False, timeout=10)
             if r.status_code == 200:
                 data = r.json()
-                if 'k' in data:
+                if "k" in data:
                     print(f"✅ {target_date.strftime('%d.%m.%Y')} eklendi.")
-                    for channel in data.get('k', []):
-                        chan_name = channel.get('n', 'Unknown')
+                    for channel in data.get("k", []):
+                        chan_name = channel.get("n", "Unknown").strip()
                         chan_id = chan_name.replace(" ", ".")
-                        
+                        chan_kID = channel.get("i")
+                        fetch_desc_for_this_channel = should_fetch_desc(chan_name)
+
                         if i == 0:
                             c_elem = ET.SubElement(master_root, "channel", id=chan_id)
                             ET.SubElement(c_elem, "display-name").text = chan_name
 
-                        date_prefix = target_date.strftime('%Y%m%d')
-                        for prog in channel.get('p', []):
-                            start_time = prog.get('c', '').replace(":", "")
-                            stop_time = prog.get('d', '').replace(":", "")
-                            
-                            # Gece yarısı devretme kontrolü (Stop Start'tan küçükse gün ekle)
+                        date_prefix = target_date.strftime("%Y%m%d")
+
+                        for prog in channel.get("p", []):
+                            start_time = prog.get("c", "").replace(":", "")
+                            stop_time = prog.get("d", "").replace(":", "")
+
                             current_stop_prefix = date_prefix
                             if int(stop_time) < int(start_time):
                                 next_day = target_date + timedelta(days=1)
-                                current_stop_prefix = next_day.strftime('%Y%m%d')
+                                current_stop_prefix = next_day.strftime("%Y%m%d")
 
-                            start = date_prefix + start_time + "00 +0300"
-                            stop = current_stop_prefix + stop_time + "00 +0300"
-                            
-                            p_elem = ET.SubElement(master_root, "programme", start=start, stop=stop, channel=chan_id)
-                            ET.SubElement(p_elem, "title", lang="tr").text = prog.get('b', 'Yayın Akışı')
+                            start = date_prefix + start_time + "00+0300"
+                            stop = current_stop_prefix + stop_time + "00+0300"
+
+                            p_elem = ET.SubElement(
+                                master_root,
+                                "programme",
+                                start=start,
+                                stop=stop,
+                                channel=chan_id
+                            )
+
+                            title = prog.get("b", "Yayın Akışı")
+                            ET.SubElement(p_elem, "title", lang="tr").text = title
+
+                            if fetch_desc_for_this_channel and chan_kID:
+                                prog_eID = prog.get("i")
+                                if prog_eID:
+                                    description = get_program_detail(
+                                        prog_eID,
+                                        target_date,
+                                        chan_kID,
+                                        chan_name
+                                    )
+                                    if description:
+                                        ET.SubElement(p_elem, "desc", lang="tr").text = description
+
         except Exception as e:
             print(f"⚠️ Türksat hatası ({target_date.strftime('%d.%m')}): {e}")
 
