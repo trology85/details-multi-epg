@@ -107,7 +107,7 @@ def get_turksat_detail_links_for_day(day_index: int):
 
         try:
             page.wait_for_selector("a.ymodal", timeout=20000)
-        except: Exception:
+        except Exception:
             print(f"⚠️ {page_url} sayfasında ymodal bekleme süresi doldu.")
             browser.close()
             return {}
