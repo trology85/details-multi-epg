@@ -50,19 +50,28 @@ DESC_TARGET_CHANNELS = {
 CHANNEL_ALIASES = {
     "trt1": "trt 1",
     "trt 1": "trt 1",
+
     "star": "star",
     "atv": "atv",
+
     "show": "show tv",
     "show tv": "show tv",
+
     "kanal d": "kanal d",
+
     "now": "now tv",
     "now tv": "now tv",
+    "fox": "now tv",
+
     "beyaz": "beyaz tv",
     "beyaz tv": "beyaz tv",
+
     "tv8": "tv 8",
     "tv 8": "tv 8",
+
     "360": "360 tv",
     "360 tv": "360 tv",
+
     "tv2": "tv 2",
     "tv 2": "tv 2",
 }
@@ -72,6 +81,8 @@ description_cache = {}
 def normalize_channel_name(name: str) -> str:
     text = html_lib.unescape(name or "").lower()
     text = text.replace(".", " ").replace("-", " ")
+    text = re.sub(r"\bhd\b", "", text)
+    text = re.sub(r"\bsd\b", "", text)
     text = re.sub(r"\s+", " ", text).strip()
     return CHANNEL_ALIASES.get(text, text)
 
@@ -163,6 +174,8 @@ def fetch_turksat_weekly(master_root):
                         chan_id = chan_name.replace(" ", ".")
                         chan_kID = channel.get("i")
                         fetch_desc_for_this_channel = should_fetch_desc(chan_name)
+                        if i == 0:
+    print(f"KANAL DEBUG: {chan_name!r} -> {normalize_channel_name(chan_name)!r} -> desc={fetch_desc_for_this_channel}")
 
                         if i == 0:
                             c_elem = ET.SubElement(master_root, "channel", id=chan_id)
