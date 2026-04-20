@@ -175,7 +175,7 @@ def fetch_turksat_weekly(master_root):
                         chan_kID = channel.get("i")
                         fetch_desc_for_this_channel = should_fetch_desc(chan_name)
                         if i == 0:
-    print(f"KANAL DEBUG: {chan_name!r} -> {normalize_channel_name(chan_name)!r} -> desc={fetch_desc_for_this_channel}")
+                            print(f"KANAL DEBUG: {chan_name!r} -> {normalize_channel_name(chan_name)!r} -> desc={fetch_desc_for_this_channel}")
 
                         if i == 0:
                             c_elem = ET.SubElement(master_root, "channel", id=chan_id)
