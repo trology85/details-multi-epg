@@ -104,8 +104,13 @@ def get_turksat_detail_links_for_day(day_index: int):
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
         page.goto(page_url, wait_until="domcontentloaded", timeout=30000)
-        page.wait_for_load_state("networkidle")
-        page.wait_for_selector("a.ymodal", timeout=15000)
+
+        try:
+            page.wait_for_selector("a.ymodal", timeout=20000)
+        except: Exception:
+            print(f"⚠️ {page_url} sayfasında ymodal bekleme süresi doldu.")
+            browser.close()
+            return {}
 
         links = page.locator("a.ymodal")
         count = links.count()
@@ -127,7 +132,6 @@ def get_turksat_detail_links_for_day(day_index: int):
 
         browser.close()
 
-    # aynı kanal + aynı başlık birden fazla olabilir
     result = {}
     for kid, title, full_url in raw_pairs:
         key = (str(kid), title)
