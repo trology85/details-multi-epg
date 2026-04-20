@@ -77,7 +77,7 @@ def normalize_channel_name(name: str) -> str:
 
 def should_fetch_desc(channel_name: str) -> bool:
     return normalize_channel_name(channel_name) in DESC_TARGET_CHANNELS
-
+    
 def get_program_detail(prog_id, target_date, channel_id, expected_channel_name):
     if not prog_id or not channel_id:
         return None
