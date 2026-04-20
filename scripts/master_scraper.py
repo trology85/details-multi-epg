@@ -107,7 +107,7 @@ def get_program_detail(prog_id, target_date, channel_id, expected_channel_name):
     )
 
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+        "User-Agent": "Mozilla/5.0",
         "Referer": "https://www.turksatkablo.com.tr/yayin-akisi.aspx",
     }
 
@@ -117,24 +117,29 @@ def get_program_detail(prog_id, target_date, channel_id, expected_channel_name):
             description_cache[cache_key] = None
             return None
 
-        raw_html = resp.text
-
-        chan_match = re.search(r"<h2>(.*?)</h2>", raw_html, re.DOTALL | re.IGNORECASE)
-        if chan_match:
-            found_channel = normalize_channel_name(re.sub("<[^<]+?>", "", chan_match.group(1)))
-            expected_channel = normalize_channel_name(expected_channel_name)
-            if found_channel != expected_channel:
-                if found_channel not in expected_channel and expected_channel not in found_channel:
-                    description_cache[cache_key] = None
-                    return None
-
-        desc_match = re.search(r"<p>(.*?)</p>", raw_html, re.DOTALL | re.IGNORECASE)
-        if not desc_match:
+        soup = BeautifulSoup(resp.text, "html.parser")
+        detail = soup.select_one("div.program-detail")
+        if not detail:
             description_cache[cache_key] = None
             return None
 
-        clean_desc = desc_match.group(1).strip()
-        clean_desc = re.sub(r"<[^<]+?>", "", clean_desc)
+        h2_list = detail.find_all("h2")
+        found_channel = ""
+        if len(h2_list) >= 1:
+            found_channel = normalize_channel_name(h2_list[0].get_text(" ", strip=True))
+
+        expected_channel = normalize_channel_name(expected_channel_name)
+        if found_channel and found_channel != expected_channel:
+            if found_channel not in expected_channel and expected_channel not in found_channel:
+                description_cache[cache_key] = None
+                return None
+
+        p = detail.find("p")
+        if not p:
+            description_cache[cache_key] = None
+            return None
+
+        clean_desc = p.get_text(" ", strip=True)
         clean_desc = html_lib.unescape(clean_desc)
         clean_desc = re.sub(r"\s+", " ", clean_desc).strip()
 
@@ -174,8 +179,13 @@ def fetch_turksat_weekly(master_root):
                         chan_id = chan_name.replace(" ", ".")
                         chan_kID = channel.get("i")
                         fetch_desc_for_this_channel = should_fetch_desc(chan_name)
+
                         if i == 0:
-                            print(f"KANAL DEBUG: {chan_name!r} -> {normalize_channel_name(chan_name)!r} -> desc={fetch_desc_for_this_channel}")
+                            print(
+                                f"KANAL DEBUG: {chan_name!r} -> "
+                                f"{normalize_channel_name(chan_name)!r} -> "
+                                f"desc={fetch_desc_for_this_channel}"
+                            )
 
                         if i == 0:
                             c_elem = ET.SubElement(master_root, "channel", id=chan_id)
@@ -208,6 +218,15 @@ def fetch_turksat_weekly(master_root):
 
                             if fetch_desc_for_this_channel and chan_kID:
                                 prog_eID = prog.get("i")
+
+                                if i == 0:
+                                    print(
+                                        f"DETAY DEBUG: kanal={chan_name!r} "
+                                        f"kID={chan_kID!r} "
+                                        f"eID={prog_eID!r} "
+                                        f"title={title!r}"
+                                    )
+
                                 if prog_eID:
                                     description = get_program_detail(
                                         prog_eID,
