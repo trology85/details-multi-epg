@@ -178,71 +178,7 @@ def normalize_channel_name(name: str) -> str:
 
 def should_fetch_desc(channel_name: str) -> bool:
     return normalize_channel_name(channel_name) in DESC_TARGET_CHANNELS
-    
-def get_program_detail(prog_id, target_date, channel_id, expected_channel_name):
-    if not prog_id or not channel_id:
-        return None
 
-    cache_key = (str(prog_id), str(channel_id), target_date.strftime("%Y%m%d"))
-    if cache_key in description_cache:
-        return description_cache[cache_key]
-
-    d = target_date.strftime("%d").lstrip("0")
-    m = target_date.strftime("%m").lstrip("0")
-    y = target_date.strftime("%Y")
-
-    detail_url = (
-        f"https://www.turksatkablo.com.tr/"
-        f"yayin-akisi-program-detay.aspx?d={d}&m={m}&y={y}&kID={channel_id}&eID={prog_id}"
-    )
-
-    headers = {
-        "User-Agent": "Mozilla/5.0",
-        "Referer": "https://www.turksatkablo.com.tr/yayin-akisi.aspx",
-    }
-
-    try:
-        resp = requests.get(detail_url, headers=headers, verify=False, timeout=10)
-        if resp.status_code != 200:
-            description_cache[cache_key] = None
-            return None
-
-        soup = BeautifulSoup(resp.text, "html.parser")
-        detail = soup.select_one("div.program-detail")
-        if not detail:
-            description_cache[cache_key] = None
-            return None
-
-        h2_list = detail.find_all("h2")
-        found_channel = ""
-        if len(h2_list) >= 1:
-            found_channel = normalize_channel_name(h2_list[0].get_text(" ", strip=True))
-
-        expected_channel = normalize_channel_name(expected_channel_name)
-        if found_channel and found_channel != expected_channel:
-            if found_channel not in expected_channel and expected_channel not in found_channel:
-                description_cache[cache_key] = None
-                return None
-
-        p = detail.find("p")
-        if not p:
-            description_cache[cache_key] = None
-            return None
-
-        clean_desc = p.get_text(" ", strip=True)
-        clean_desc = html_lib.unescape(clean_desc)
-        clean_desc = re.sub(r"\s+", " ", clean_desc).strip()
-
-        if len(clean_desc) > 5:
-            print(f"      ↳ 📝 {expected_channel_name} için detay başarıyla alındı.")
-            description_cache[cache_key] = clean_desc
-            return clean_desc
-
-    except Exception as e:
-        print(f"      ⚠️ Bağlantı hatası ({expected_channel_name}): {e}")
-
-    description_cache[cache_key] = None
-    return None
 
 def fetch_turksat_weekly(master_root):
     tr_now = datetime.utcnow() + timedelta(hours=3)
