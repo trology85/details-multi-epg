@@ -3,6 +3,7 @@ import html as html_lib
 import io
 import os
 import re
+import time
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta
 from urllib.parse import parse_qs, urljoin, urlparse
@@ -141,6 +142,10 @@ PLAYWRIGHT_SELECTOR_TIMEOUT_MS = 20_000
 DETAIL_REQUEST_TIMEOUT_SEC = 5
 DEBUG = False
 
+TURKSAT_DAY_RETRIES = 3
+TURKSAT_MIN_PROGRAMMES_PER_DAY = 100
+TURKSAT_MIN_VALID_DAYS = 5
+
 # Cache'ler
 # Aynı detail URL yeniden istenmesin diye
 DETAIL_PAGE_CACHE = {}
@@ -262,95 +267,155 @@ def get_program_detail_from_url(detail_url: str, channel_name: str):
 
 
 
+def fetch_turksat_day_json(url: str, target_date: datetime, retries: int = TURKSAT_DAY_RETRIES):
+    for attempt in range(1, retries + 1):
+        try:
+            # Türksat JSON çağrısını temiz istekle yapıyoruz.
+            # Ortak SESSION yerine direkt requests.get kullanmak, yedek sistemdeki davranışa daha yakın.
+            r = requests.get(url, headers=DEFAULT_HEADERS, verify=False, timeout=20)
+
+            if r.status_code != 200:
+                print(
+                    f"⚠️ Türksat HTTP {r.status_code}: "
+                    f"{target_date.strftime('%d.%m.%Y')} - deneme {attempt}/{retries}"
+                )
+                time.sleep(5)
+                continue
+
+            data = r.json()
+            channels = data.get("k", []) if isinstance(data, dict) else []
+            programme_count = sum(len(ch.get("p", [])) for ch in channels)
+
+            if not channels or programme_count < TURKSAT_MIN_PROGRAMMES_PER_DAY:
+                print(
+                    f"⚠️ Türksat eksik/boş veri: "
+                    f"{target_date.strftime('%d.%m.%Y')} "
+                    f"kanal={len(channels)} program={programme_count} - deneme {attempt}/{retries}"
+                )
+                time.sleep(5)
+                continue
+
+            return data, programme_count
+
+        except Exception as e:
+            print(
+                f"⚠️ Türksat veri alma hatası "
+                f"({target_date.strftime('%d.%m.%Y')}): {e} - deneme {attempt}/{retries}"
+            )
+            time.sleep(5)
+
+    return None, 0
+
+
 def fetch_turksat_weekly(master_root):
     tr_now = datetime.utcnow() + timedelta(hours=3)
     print("🇹🇷 Türksat Haftalık Tarama Başlatıldı...")
 
     total_desc_count = 0
+    total_programme_count = 0
+    valid_days = 0
+    channel_defs_written = False
 
     for i in range(7):
         target_date = tr_now + timedelta(days=i)
         day_str = target_date.strftime("%d").lstrip("0")
         url = f"https://www.turksatkablo.com.tr/userUpload/EPG/{day_str}.json"
 
-        # Açıklama linkleri şu an ilk 3 gün için aktif
+        # Açıklama linkleri şu an ilk 3 gün için aktif.
         rendered_detail_links = get_turksat_detail_links_for_day(i) if i in DAY_CODE_MAP else {}
         day_desc_count = 0
 
-        try:
-            r = SESSION.get(url, verify=False, timeout=10)
-            if r.status_code == 200:
-                data = r.json()
-                if "k" in data:
-                    print(f"✅ {target_date.strftime('%d.%m.%Y')} eklendi.")
-                    for channel in data.get("k", []):
-                        chan_name = channel.get("n", "Unknown").strip()
-                        chan_id = chan_name.replace(" ", ".")
-                        chan_kID = channel.get("i")
-                        fetch_desc_for_this_channel = should_fetch_desc(chan_name)
+        data, programme_count = fetch_turksat_day_json(url, target_date)
+        if data is None:
+            print(f"❌ Türksat günü atlandı: {target_date.strftime('%d.%m.%Y')} ({url})")
+            continue
 
-                        log_debug(
-                            f"KANAL DEBUG: {chan_name!r} -> "
-                            f"{normalize_channel_name(chan_name)!r} -> "
-                            f"desc={fetch_desc_for_this_channel}"
-                        )
+        valid_days += 1
+        total_programme_count += programme_count
+        print(f"✅ {target_date.strftime('%d.%m.%Y')} eklendi. ({programme_count} program)")
 
-                        if i == 0:
-                            c_elem = ET.SubElement(master_root, "channel", id=chan_id)
-                            ET.SubElement(c_elem, "display-name").text = chan_name
+        for channel in data.get("k", []):
+            chan_name = channel.get("n", "Unknown").strip()
+            chan_id = chan_name.replace(" ", ".")
+            chan_kID = channel.get("i")
+            fetch_desc_for_this_channel = should_fetch_desc(chan_name)
 
-                        date_prefix = target_date.strftime("%Y%m%d")
+            log_debug(
+                f"KANAL DEBUG: {chan_name!r} -> "
+                f"{normalize_channel_name(chan_name)!r} -> "
+                f"desc={fetch_desc_for_this_channel}"
+            )
 
-                        for prog in channel.get("p", []):
-                            start_time = prog.get("c", "").replace(":", "")
-                            stop_time = prog.get("d", "").replace(":", "")
+            # İlk sağlam Türksat gününde kanal tanımlarını yaz.
+            # Bugünün verisi eksik gelip atlanırsa, sonraki sağlam gün yine channel üretir.
+            if not channel_defs_written:
+                c_elem = ET.SubElement(master_root, "channel", id=chan_id)
+                ET.SubElement(c_elem, "display-name").text = chan_name
 
-                            current_stop_prefix = date_prefix
-                            if int(stop_time) < int(start_time):
-                                next_day = target_date + timedelta(days=1)
-                                current_stop_prefix = next_day.strftime("%Y%m%d")
+            date_prefix = target_date.strftime("%Y%m%d")
 
-                            start = date_prefix + start_time + "00+0300"
-                            stop = current_stop_prefix + stop_time + "00+0300"
+            for prog in channel.get("p", []):
+                start_time = prog.get("c", "").replace(":", "")
+                stop_time = prog.get("d", "").replace(":", "")
 
-                            p_elem = ET.SubElement(
-                                master_root,
-                                "programme",
-                                start=start,
-                                stop=stop,
-                                channel=chan_id,
-                            )
+                if not start_time or not stop_time:
+                    continue
 
-                            title = prog.get("b", "Yayın Akışı")
-                            ET.SubElement(p_elem, "title", lang="tr").text = title
+                try:
+                    current_stop_prefix = date_prefix
+                    if int(stop_time) < int(start_time):
+                        next_day = target_date + timedelta(days=1)
+                        current_stop_prefix = next_day.strftime("%Y%m%d")
+                except Exception:
+                    continue
 
-                            if fetch_desc_for_this_channel and chan_kID:
-                                norm_title = normalize_program_title(title)
-                                key = (str(chan_kID), norm_title)
+                start = date_prefix + start_time + "00+0300"
+                stop = current_stop_prefix + stop_time + "00+0300"
 
-                                log_debug(
-                                    f"DETAY DEBUG: kanal={chan_name!r} "
-                                    f"kID={chan_kID!r} title={title!r} "
-                                    f"key={key!r} found={key in rendered_detail_links}"
-                                )
+                p_elem = ET.SubElement(
+                    master_root,
+                    "programme",
+                    start=start,
+                    stop=stop,
+                    channel=chan_id,
+                )
 
-                                if key in rendered_detail_links and rendered_detail_links[key]:
-                                    detail_url = rendered_detail_links[key].pop(0)
-                                    description = get_program_detail_from_url(detail_url, chan_name)
-                                    if description:
-                                        ET.SubElement(p_elem, "desc", lang="tr").text = description
-                                        day_desc_count += 1
-                                        total_desc_count += 1
+                title = prog.get("b", "Yayın Akışı")
+                ET.SubElement(p_elem, "title", lang="tr").text = title
 
-        except Exception as e:
-            print(f"⚠️ Türksat hatası ({target_date.strftime('%d.%m')}): {e}")
+                if fetch_desc_for_this_channel and chan_kID:
+                    norm_title = normalize_program_title(title)
+                    key = (str(chan_kID), norm_title)
+
+                    log_debug(
+                        f"DETAY DEBUG: kanal={chan_name!r} "
+                        f"kID={chan_kID!r} title={title!r} "
+                        f"key={key!r} found={key in rendered_detail_links}"
+                    )
+
+                    if key in rendered_detail_links and rendered_detail_links[key]:
+                        detail_url = rendered_detail_links[key].pop(0)
+                        description = get_program_detail_from_url(detail_url, chan_name)
+                        if description:
+                            ET.SubElement(p_elem, "desc", lang="tr").text = description
+                            day_desc_count += 1
+                            total_desc_count += 1
+
+        channel_defs_written = True
 
         if day_desc_count > 0:
             print(f"   ↳ {target_date.strftime('%d.%m.%Y')} için {day_desc_count} açıklama eklendi.")
 
+    if valid_days < TURKSAT_MIN_VALID_DAYS:
+        raise RuntimeError(
+            f"Türksat verisi güvenli değil. "
+            f"Geçerli gün sayısı: {valid_days}/7, toplam program: {total_programme_count}"
+        )
+
+    print(f"📊 Türksat geçerli gün: {valid_days}/7, toplam program: {total_programme_count}")
+
     if total_desc_count > 0:
         print(f"📝 Türksat açıklama toplamı: {total_desc_count}")
-
 
 
 def fetch_tivibu_spor(master_root):
@@ -381,23 +446,20 @@ def fetch_tivibu_spor(master_root):
 
 
 
-def fetch_idman_tv(master_root):
-    url = "https://idmantv.az/az/program"
-    chan_id = "Idman.TV"
-
-    print("🇦 İdman TV verisi çekiliyor...")
+def fetch_azerbaijan_program_page(master_root, url: str, chan_id: str, display_names, label: str):
+    print(f"{label} verisi çekiliyor...")
 
     try:
         resp = SESSION.get(url, verify=False, timeout=20)
         if resp.status_code != 200:
-            print(f"⚠️ İdman TV HTTP hatası: {resp.status_code}")
+            print(f"⚠️ {label} HTTP hatası: {resp.status_code}")
             return
 
         soup = BeautifulSoup(resp.text, "html.parser")
         day_cards = soup.find_all("div", class_="day-card")
 
         if not day_cards:
-            print("⚠️ İdman TV day-card bulunamadı.")
+            print(f"⚠️ {label} day-card bulunamadı.")
             return
 
         parsed_items = []
@@ -410,7 +472,7 @@ def fetch_idman_tv(master_root):
                 continue
 
             title_text = title_el.get_text(" ", strip=True)
-            date_match = re.search(r"(\d{2}\.\d{2}\.\d{4})", title_text)
+            date_match = re.search(r"(\d{1,2}\.\d{1,2}\.\d{4})", title_text)
             if not date_match:
                 continue
 
@@ -430,7 +492,8 @@ def fetch_idman_tv(master_root):
             prev_minutes = None
 
             for line in lines:
-                m = re.match(r"^(\d{2}):(\d{2})\s+(.+)$", line)
+                # Bazı Azerbaycan kaynaklarında 7:00 gibi tek haneli saatler de gelebiliyor.
+                m = re.match(r"^(\d{1,2})[:.](\d{2})\s+(.+)$", line)
                 if not m:
                     continue
 
@@ -442,6 +505,7 @@ def fetch_idman_tv(master_root):
                 if prev_minutes is not None and total_minutes < prev_minutes:
                     current_day += timedelta(days=1)
 
+                # Azerbaycan saati UTC+4, Türkiye UTC+3.
                 source_dt = current_day.replace(hour=hh, minute=mm, second=0, microsecond=0)
                 turkey_dt = source_dt - timedelta(hours=1)
 
@@ -449,14 +513,14 @@ def fetch_idman_tv(master_root):
                 prev_minutes = total_minutes
 
         if not parsed_items:
-            print("⚠️ İdman TV için programme üretilemedi.")
+            print(f"⚠️ {label} için programme üretilemedi.")
             return
 
         parsed_items.sort(key=lambda x: x[0])
 
         c_elem = ET.SubElement(master_root, "channel", id=chan_id)
-        ET.SubElement(c_elem, "display-name").text = "İdman TV"
-        ET.SubElement(c_elem, "display-name").text = "Idman TV"
+        for display_name in display_names:
+            ET.SubElement(c_elem, "display-name").text = display_name
 
         for idx, (start_dt, title) in enumerate(parsed_items):
             if idx + 1 < len(parsed_items):
@@ -476,10 +540,31 @@ def fetch_idman_tv(master_root):
             )
             ET.SubElement(p_elem, "title", lang="tr").text = title
 
-        print(f"✅ İdman TV başarıyla eklendi. ({len(parsed_items)} programme)")
+        print(f"✅ {label} başarıyla eklendi. ({len(parsed_items)} programme)")
 
     except Exception as e:
-        print(f"⚠️ İdman TV hatası: {e}")
+        print(f"⚠️ {label} hatası: {e}")
+
+
+def fetch_idman_tv(master_root):
+    fetch_azerbaijan_program_page(
+        master_root,
+        url="https://idmantv.az/az/program",
+        chan_id="Idman.TV",
+        display_names=["İdman TV", "Idman TV"],
+        label="🇦 İdman TV",
+    )
+
+
+def fetch_medeniyyet_tv(master_root):
+    fetch_azerbaijan_program_page(
+        master_root,
+        url="https://medeniyyettv.az/az/program",
+        chan_id="Medeniyyet.TV",
+        display_names=["Mədəniyyət TV", "Medeniyyet TV"],
+        label="🎭 Mədəniyyət TV",
+    )
+
 
 
 
@@ -488,6 +573,7 @@ def create_master():
 
     fetch_turksat_weekly(master_root)
     fetch_idman_tv(master_root)
+    fetch_medeniyyet_tv(master_root)
 
     for country, url in SOURCES.items():
         print(f"🌍 {country} verisi işleniyor...")
