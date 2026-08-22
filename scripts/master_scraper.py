@@ -28,6 +28,7 @@ WANTED_CHANNELS = {
     "SAT.1.de": "SAT 1",
     "VOX.de": "Vox",
     "ZDF.de": "ZDF",
+    "six.de": "Sixx",
     "TF1.fr": "TF1",
     "M6.fr": "M6",
     "France2.fr": "France.2",
