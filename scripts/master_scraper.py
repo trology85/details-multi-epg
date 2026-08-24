@@ -24,6 +24,7 @@ SOURCES = {
 
 WANTED_CHANNELS = {
     "RTL.de": "RTL",
+    "RTLZWEI.de": "RTLZWEI",
     "ProSieben.de": "Pro7",
     "SAT.1.de": "SAT 1",
     "VOX.de": "Vox",
